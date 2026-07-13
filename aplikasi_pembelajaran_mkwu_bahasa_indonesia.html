@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Sastrabudi - MKWU Bahasa Indonesia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; 
+            color: #0f172a; 
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .active-tab {
+            border-bottom: 4px solid #eab308;
+            color: #eab308;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- HEADER -->
+    <header class="bg-slate-900 text-white shadow-lg border-b-4 border-yellow-500 relative overflow-hidden">
+        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-slate-800 opacity-40"></div>
+        <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-40 h-40 rounded-full bg-yellow-600 opacity-20"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between relative z-10">
+            <div class="flex items-center space-x-4">
+                <div class="bg-yellow-500 p-3 rounded-2xl text-slate-900 shadow-lg transform hover:rotate-6 transition-transform">
+                    <i class="fas fa-book-reader text-3xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">Sastrabudi MKWU</h1>
+                    <p class="text-xs text-slate-300">Sistem Portal Pembelajaran Bahasa Indonesia Terintegrasi RPS</p>
+                    <p class="text-[10px] text-yellow-400 font-semibold tracking-wider uppercase mt-0.5">Lab Sastrabudi • Prodi PBI • Universitas Borneo Tarakan</p>
+                </div>
+            </div>
+            
+            <div class="mt-4 md:mt-0 text-right">
+                <div class="bg-slate-800 px-4 py-2 rounded-xl border border-slate-700">
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Dosen Pengampu</p>
+                    <p class="text-xs text-yellow-400 font-bold">Dr. Dwi Cahyono Aji, M.A.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION TABS -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm overflow-x-auto custom-scroll">
+        <div class="max-w-7xl mx-auto px-4 flex space-x-8 h-14 min-w-[760px]">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn flex items-center space-x-2 px-1 py-4 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all border-b-4 border-transparent">
+                <i class="fas fa-columns"></i>
+                <span>Beranda & Kemajuan</span>
+            </button>
+            <button onclick="switchTab('rps')" id="tab-rps" class="tab-btn flex items-center space-x-2 px-1 py-4 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all border-b-4 border-transparent">
+                <i class="fas fa-scroll"></i>
+                <span>Syllabus RPS Explorer</span>
+            </button>
+            <button onclick="switchTab('kalimat')" id="tab-kalimat" class="tab-btn flex items-center space-x-2 px-1 py-4 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all border-b-4 border-transparent">
+                <i class="fas fa-pencil-alt"></i>
+                <span>Kalimat Efektif Lab</span>
+            </button>
+            <button onclick="switchTab('pkm')" id="tab-pkm" class="tab-btn flex items-center space-x-2 px-1 py-4 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all border-b-4 border-transparent">
+                <i class="fas fa-file-invoice"></i>
+                <span>PKM KI Proposal Builder</span>
+            </button>
+            <button onclick="switchTab('tugas')" id="tab-tugas" class="tab-btn flex items-center space-x-2 px-1 py-4 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all border-b-4 border-transparent">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Evaluasi & Workspace</span>
+            </button>
+            <button onclick="switchTab('presentasi')" id="tab-presentasi" class="tab-btn flex items-center space-x-2 px-1 py-4 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all border-b-4 border-transparent">
+                <i class="fas fa-users-viewfinder"></i>
+                <span>Forum Ilmiah Simulator</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full relative z-10">
+
+        <!-- Toast Notifications -->
+        <div id="appToast" class="hidden fixed bottom-5 right-5 z-50 flex items-center justify-between p-4 text-emerald-800 border-l-4 border-emerald-500 bg-emerald-50 rounded-xl shadow-lg transition-all duration-300" role="alert">
+            <div class="flex items-center space-x-3 pr-4">
+                <i class="fas fa-check-circle text-lg text-emerald-600"></i>
+                <p id="toastMessage" class="text-sm font-semibold"></p>
+            </div>
+            <button onclick="hideToast()" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
+        </div>
+
+        <!-- ================= TAB: DASHBOARD OVERVIEW ================= -->
+        <div id="content-dashboard" class="tab-content space-y-6 fade-in">
+            <!-- Jumbotron Selamat Datang -->
+            <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-2xl p-6 md:p-8 shadow-md relative overflow-hidden">
+                <div class="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-y-1/4">
+                    <i class="fas fa-graduation-cap text-[200px]"></i>
+                </div>
+                <div class="max-w-2xl relative z-10 space-y-4">
+                    <span class="bg-yellow-500 text-slate-900 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Mata Kuliah Wajib Umum</span>
+                    <h2 class="text-2xl md:text-4xl font-extrabold leading-tight">Pengembangan Kompetensi Bahasa Indonesia Akademik</h2>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Mata kuliah Bahasa Indonesia membekali mahasiswa dengan kemampuan menyusun karya ilmiah komprehensif, menulis kalimat efektif, merumuskan resensi, hingga merekonstruksi proposal Program Kreativitas Mahasiswa Karya Ilmiah (PKM KI) lintas fakultas.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="switchTab('rps')" class="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold px-5 py-2.5 rounded-xl text-xs transition-all shadow-md">
+                            Mulai Jelajahi RPS <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                        <button onclick="playIntroSpeech()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs transition-all border border-slate-700 flex items-center space-x-2">
+                            <i class="fas fa-volume-up"></i>
+                            <span>Dengar Sambutan Dosen</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Mini-Stats & CPL -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Status Akademik -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Bobot SKS & Kode</h3>
+                            <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded">GMKL1WD01</span>
+                        </div>
+                        <p class="text-3xl font-extrabold text-slate-900 mt-2">2 SKS <span class="text-sm font-normal text-slate-500">(Genap)</span></p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <p class="text-xs text-slate-600 flex items-center"><i class="fas fa-circle-nodes text-emerald-500 mr-2"></i> Rumpun MK: MKWU Umum</p>
+                    </div>
+                </div>
+
+                <!-- Capaian Lulusan (Sikap & Keterampilan) -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm col-span-1 md:col-span-2 space-y-4">
+                    <h3 class="text-sm font-bold text-slate-800 flex items-center">
+                        <i class="fas fa-award text-yellow-500 mr-2"></i> Fokus Capaian Pembelajaran Lulusan (CPL)
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-600">
+                        <p class="flex items-start"><i class="fas fa-check-square text-emerald-500 mr-2 mt-0.5"></i> <span><strong>S4:</strong> Bangga dan cinta tanah air, nasionalisme tinggi.</span></p>
+                        <p class="flex items-start"><i class="fas fa-check-square text-emerald-500 mr-2 mt-0.5"></i> <span><strong>P1:</strong> Menguasai konsep dasar kebahasaan & penulisan ilmiah.</span></p>
+                        <p class="flex items-start"><i class="fas fa-check-square text-emerald-500 mr-2 mt-0.5"></i> <span><strong>KU4:</strong> Mampu menulis deskripsi saintifik dalam skripsi & PKM.</span></p>
+                        <p class="flex items-start"><i class="fas fa-check-square text-emerald-500 mr-2 mt-0.5"></i> <span><strong>KK4:</strong> Komunikasi lisan & tulis yang tangguh dalam akademis.</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interaktif Singkat Sejarah BI (Week 1 Quiz) -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                    <div class="space-y-2 lg:max-w-xl">
+                        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Aktivitas Ringkas (Minggu 1)</span>
+                        <h3 class="text-lg font-bold text-slate-800">Sejarah & Kedudukan Bahasa Indonesia</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">Sebelum mendalami penulisan artikel ilmiah, mari uji wawasan Anda seputar asal mula dan fungsi bahasa negara kita sebagaimana dibahas pada modul awal semester.</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <button onclick="startMicroQuiz()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-6 rounded-xl text-xs flex items-center space-x-2 transition-all">
+                            <i class="fas fa-gamepad"></i>
+                            <span>Mulai Uji Cepat (Quiz)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Box Uji Cepat Sejarah (Dynamic UI) -->
+                <div id="microQuizBox" class="hidden mt-6 bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
+                    <div class="flex justify-between items-center text-xs text-slate-500">
+                        <span id="quizQuestCounter">Soal 1 dari 3</span>
+                        <span id="quizScoreCount">Skor: 0</span>
+                    </div>
+                    <p id="quizQuestText" class="text-sm font-bold text-slate-800"></p>
+                    <div id="quizAnswersGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <!-- Diisi lewat JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB: SYLLABUS RPS EXPLORER ================= -->
+        <div id="content-rps" class="tab-content space-y-6 fade-in hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fas fa-list-ol text-blue-600 mr-2"></i> Rencana Pembelajaran Semester (RPS)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Struktur 16 Pertemuan Akademik Pembelajaran Bahasa Indonesia</p>
+                    </div>
+                    <div class="text-xs text-slate-400 font-semibold italic">Total Bobot Penilaian: 100%</div>
+                </div>
+
+                <!-- Grid Pembelajaran 16 Pertemuan -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Navigasi Pertemuan (Kiri) -->
+                    <div class="lg:col-span-4 space-y-2 max-h-[500px] overflow-y-auto custom-scroll pr-2">
+                        <button onclick="loadSyllabusWeek(1)" id="weekBtn-1" class="week-sel-btn w-full p-3 text-left rounded-xl text-xs font-semibold bg-slate-900 text-white transition-all flex justify-between items-center">
+                            <span>Minggu 1: Sejarah & Kedudukan BI</span>
+                            <span class="bg-yellow-500 text-slate-900 px-1.5 py-0.5 rounded text-[9px] font-bold">5%</span>
+                        </button>
+                        <button onclick="loadSyllabusWeek(2)" id="weekBtn-2" class="week-sel-btn w-full p-3 text-left rounded-xl text-xs font-semibold hover:bg-slate-100 text-slate-700 transition-all flex justify-between items-center">
+                            <span>Minggu 2-4: Kalimat & Resensi</span>
+                            <span class="bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded text-[9px] font-bold">15%</span>
+                        </button>
+                        <button onclick="loadSyllabusWeek(3)" id="weekBtn-3" class="week-sel-btn w-full p-3 text-left rounded-xl text-xs font-semibold hover:bg-slate-100 text-slate-700 transition-all flex justify-between items-center">
+                            <span>Minggu 5-7: Membuat Karya Ilmiah</span>
+                            <span class="bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded text-[9px] font-bold">20%</span>
+                        </button>
+                        <button onclick="loadSyllabusWeek(4)" id="weekBtn-4" class="week-sel-btn w-full p-3 text-left rounded-xl text-xs font-semibold hover:bg-slate-100 text-slate-700 transition-all flex justify-between items-center">
+                            <span>Minggu 8: UTS Review Jurnal</span>
+                            <span class="bg-yellow-500 text-slate-900 px-1.5 py-0.5 rounded text-[9px] font-bold">Review</span>
+                        </button>
+                        <button onclick="loadSyllabusWeek(5)" id="weekBtn-5" class="week-sel-btn w-full p-3 text-left rounded-xl text-xs font-semibold hover:bg-slate-100 text-slate-700 transition-all flex justify-between items-center">
+                            <span>Minggu 9-11: Menulis Proposal PKM</span>
+                            <span class="bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded text-[9px] font-bold">30%</span>
+                        </button>
+                        <button onclick="loadSyllabusWeek(6)" id="weekBtn-6" class="week-sel-btn w-full p-3 text-left rounded-xl text-xs font-semibold hover:bg-slate-100 text-slate-700 transition-all flex justify-between items-center">
+                            <span>Minggu 12: Dokumentasi PKM KI</span>
+                            <span class="bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded text-[9px] font-bold">10%</span>
+                        </button>
+                        <button onclick="loadSyllabusWeek(7)" id="weekBtn-7" class="week-sel-btn w-full p-3 text-left rounded-xl text-xs font-semibold hover:bg-slate-100 text-slate-700 transition-all flex justify-between items-center">
+                            <span>Minggu 13-15: Forum Ilmiah</span>
+                            <span class="bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded text-[9px] font-bold">20%</span>
+                        </button>
+                        <button onclick="loadSyllabusWeek(8)" id="weekBtn-8" class="week-sel-btn w-full p-3 text-left rounded-xl text-xs font-semibold hover:bg-slate-100 text-slate-700 transition-all flex justify-between items-center">
+                            <span>Minggu 16: UAS Proposal PKM</span>
+                            <span class="bg-yellow-500 text-slate-900 px-1.5 py-0.5 rounded text-[9px] font-bold">Final</span>
+                        </button>
+                    </div>
+
+                    <!-- Detail Materi & Penugasan (Kanan) -->
+                    <div class="lg:col-span-8 bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-4" id="weekDetailsContainer">
+                        <!-- Generated Dynamically via JS -->
+                        <h3 class="text-base font-bold text-slate-900 flex justify-between items-center">
+                            <span id="syllabusWeekTitle">Minggu 1: Sejarah, Fungsi, dan Kedudukan BI</span>
+                            <span id="syllabusWeekWeight" class="text-xs bg-yellow-100 text-yellow-800 font-extrabold px-3 py-1 rounded">Bobot: 5%</span>
+                        </h3>
+                        <div class="space-y-3 text-xs text-slate-700">
+                            <p><strong>Sub-CP-MK:</strong> <span id="syllabusWeekCpmk">Mahasiswa mampu menjelaskan Sejarah, Fungsi dan Kedudukan Bahasa Indonesia (C2,A2)</span></p>
+                            <p><strong>Metode Pembelajaran:</strong> <span id="syllabusWeekMethod">Kuliah & Diskusi Daring (TM: 1x(3x50"))</span></p>
+                            <div class="p-4 bg-white rounded-xl border border-slate-200 space-y-1.5">
+                                <h4 class="font-bold text-slate-800 text-xs flex items-center">
+                                    <i class="fas fa-tasks text-blue-500 mr-2"></i> Deskripsi Tugas Utama
+                                </h4>
+                                <p id="syllabusWeekTaskDesc">Tugas 1: Menceritakan kembali video atau film (Tanah Air Beta) berkaitan dengan sejarah, fungsi, dan kedudukan BI dalam bentuk ringkasan minimal 150 kata.</p>
+                            </div>
+                            <div class="p-4 bg-white rounded-xl border border-slate-200 space-y-1.5">
+                                <h4 class="font-bold text-slate-800 text-xs flex items-center">
+                                    <i class="fas fa-ranking-star text-amber-500 mr-2"></i> Kriteria & Rubrik Penilaian
+                                </h4>
+                                <p id="syllabusWeekRubric">Kriteria ketepatan uraian & kesesuaian isi minimal 150 kata (bobot 60% isi, 40% relevansi materi sejarah).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB: KALIMAT EFEKTIF LAB ================= -->
+        <div id="content-kalimat" class="tab-content space-y-6 fade-in hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b pb-4 mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fas fa-spellcheck text-emerald-600 mr-2"></i> Laboratorium Kalimat Efektif (Week 2-4)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Praktik menyusun kalimat akademik tanpa pleonasme, ketidaksejajaran, dan kegandaan subjek.</p>
+                    </div>
+                    <button onclick="resetKalimatPlayground()" class="text-xs font-bold text-blue-600 hover:text-blue-800"><i class="fas fa-redo-alt mr-1"></i> Reset Latihan</button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Kalimat Tidak Efektif Pilihan (Kiri) -->
+                    <div class="lg:col-span-5 space-y-3">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Pilih Kalimat Rusak / Tidak Efektif:</label>
+                        <div id="brokenSentencesList" class="space-y-2">
+                            <!-- Diisi via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Ruang Kerja Perbaikan (Kanan) -->
+                    <div class="lg:col-span-7 bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="p-4 bg-white rounded-xl border border-slate-200">
+                                <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Masalah Kalimat:</p>
+                                <p id="selectedBrokenSentence" class="text-sm font-bold text-red-600 italic">"Bagi para mahasiswa-mahasiswa sekalian wajib hadir."</p>
+                                <p id="brokenErrorExplanation" class="text-xs text-slate-500 mt-2">Terjadi pleonasme ("para" dan "mahasiswa-mahasiswa") serta subjek yang kabur akibat preposisi "bagi".</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tulis Kalimat Perbaikan Anda:</label>
+                                <textarea id="userCorrectedSentence" rows="3" class="w-full p-3 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all font-medium text-slate-800" placeholder="Ketik versi efektifnya di sini..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 mt-4 border-t flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                            <span class="text-xs text-slate-400">Tips: Gunakan aturan SPOK sejajar dan hemat kata.</span>
+                            <button onclick="evaluateUserSentence()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-all">
+                                <i class="fas fa-check"></i>
+                                <span>Periksa Hasil Perbaikan</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hasil Pemeriksaan Detil -->
+                <div id="correctionFeedbackBox" class="hidden mt-6 p-5 rounded-2xl border flex items-start space-x-4">
+                    <div id="correctionFeedbackIcon" class="p-3 rounded-full text-xl flex-shrink-0"></div>
+                    <div class="space-y-1">
+                        <h4 id="correctionFeedbackStatus" class="font-bold text-sm"></h4>
+                        <p id="correctionFeedbackText" class="text-xs text-slate-600 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB: PKM KI PROPOSAL BUILDER ================= -->
+        <div id="content-pkm" class="tab-content space-y-6 fade-in hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fas fa-paste text-indigo-600 mr-2"></i> PKM KI Proposal Builder (Week 9-11)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Rancang kerangka proposal Program Kreativitas Mahasiswa Karya Ilmiah sesuai sistematika resmi.</p>
+                    </div>
+                    <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-3 py-1 rounded">RPS Tugas 4</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Form Input Draft (Kiri) -->
+                    <div class="lg:col-span-6 space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Judul Proposal PKM KI:</label>
+                            <input type="text" id="pkmTitle" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-semibold text-slate-800" placeholder="Contoh: Penerapan Tata Ruang Hijau Berbasis Mitigasi Bencana di Pesisir Tarakan">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Ketua Kelompok:</label>
+                                <input type="text" id="pkmLeader" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-semibold text-slate-800" placeholder="Nama Mahasiswa">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Asal Fakultas / Jurusan:</label>
+                                <input type="text" id="pkmFaculty" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-semibold text-slate-800" placeholder="Fakultas Teknik / PWK">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Anggota Kelompok (Lokal / Lintas Fakultas):</label>
+                            <textarea id="pkmMembers" rows="2" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-medium text-slate-800" placeholder="Tuliskan nama anggota kelompok dan nim/fakultas masing-masing..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Latar Belakang & Rumusan Gagasan:</label>
+                            <textarea id="pkmBackground" rows="3" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-medium text-slate-800" placeholder="Jelaskan masalah, urgensi, dan gagasan penyelesaian yang ditawarkan..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Metodologi & Tahapan Pelaksanaan:</label>
+                            <textarea id="pkmMethodology" rows="3" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 text-xs font-medium text-slate-800" placeholder="Bagaimana gagasan ini akan dilaksanakan secara sistematis..."></textarea>
+                        </div>
+
+                        <button onclick="generatePKMOutline()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-xl text-xs flex justify-center items-center space-x-2 transition-all">
+                            <i class="fas fa-file-export"></i>
+                            <span>Susun Outline Proposal PKM</span>
+                        </button>
+                    </div>
+
+                    <!-- Pratinjau Desain Proposal (Kanan) -->
+                    <div class="lg:col-span-6 bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center border-b pb-2 mb-4">
+                                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Preview Draft Proposal (Sistematika)</h3>
+                                <button onclick="printPKMOutline()" class="text-slate-400 hover:text-slate-600" title="Cetak / Unduh Draft"><i class="fas fa-print"></i></button>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-inner h-[400px] overflow-y-auto custom-scroll space-y-4" id="pkmPreviewArea">
+                                <div class="text-center space-y-1">
+                                    <h4 class="font-extrabold text-xs text-slate-800">DRAFT PROPOSAL PROGRAM KREATIVITAS MAHASISWA</h4>
+                                    <h4 class="font-bold text-xs text-indigo-600 uppercase tracking-widest">BIDANG KARYA ILMIAH (PKM-KI)</h4>
+                                </div>
+                                <div class="border-t border-b py-2 text-[10px] text-slate-600 space-y-1">
+                                    <p><strong>Judul:</strong> <span id="prevTitle" class="italic">-</span></p>
+                                    <p><strong>Pengusul Utama:</strong> <span id="prevLeader">-</span></p>
+                                    <p><strong>Fakultas/Prodi:</strong> <span id="prevFaculty">-</span></p>
+                                    <p><strong>Anggota Tim:</strong> <span id="prevMembers">-</span></p>
+                                </div>
+                                <div class="text-[11px] text-slate-700 space-y-3">
+                                    <div>
+                                        <h5 class="font-bold text-xs text-slate-800">BAB 1. LATAR BELAKANG & RUMUSAN GAGASAN</h5>
+                                        <p id="prevBackground" class="leading-relaxed mt-1 text-slate-500 italic">Belum diisi.</p>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold text-xs text-slate-800">BAB 2. METODE PELAKSANAAN GAGASAN</h5>
+                                        <p id="prevMethodology" class="leading-relaxed mt-1 text-slate-500 italic">Belum diisi.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-4 italic">Format di atas mengacu pada panduan resmi PKM Karya Ilmiah Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB: EVALUASI & WORKSPACE ================= -->
+        <div id="content-tugas" class="tab-content space-y-6 fade-in hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fas fa-graduation-cap text-indigo-600 mr-2"></i> Evaluasi Tugas Mandiri & Rubrik Penilaian
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Kirimkan draft tulisan Anda untuk dinilai kesesuaiannya dengan rubrik RPS secara otomatis.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Form Pengiriman & Pemilihan Tugas (Kiri) -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Pilih Penugasan RPS:</label>
+                            <select id="selectedAssignmentType" onchange="updateAssignmentInfo()" class="w-full p-2.5 border border-slate-300 rounded-xl bg-white text-xs font-semibold text-slate-800">
+                                <option value="task1">Tugas 1: Ringkasan Film (Sejarah & Kedudukan BI)</option>
+                                <option value="task2">Tugas 2: Menulis Resensi Buku / Karya</option>
+                                <option value="task3">Tugas 3: Penyusunan Artikel / Karya Ilmiah</option>
+                                <option value="task4">Tugas 4: Proposal PKM-KI Kelompok</option>
+                            </select>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                            <h4 class="font-bold text-slate-800 text-xs flex items-center">
+                                <i class="fas fa-info-circle text-slate-500 mr-2"></i> Aturan Kelulusan Tugas:
+                            </h4>
+                            <p id="assignmentRubricDetails" class="text-[11px] text-slate-600 leading-relaxed">Uraian ringkas film minimal 150 kata dengan menyertakan bahasan pokok tentang fungsi pemersatu & perjuangan sejarah.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Tulis / Tempel Uraian Tugas Anda:</label>
+                            <textarea id="studentAssignmentDraft" rows="8" class="w-full p-3 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-medium text-slate-800" placeholder="Ketik hasil kerja Anda di sini untuk diuji kematangannya sebelum disubmit resmi..."></textarea>
+                            <div class="flex justify-between items-center text-[10px] text-slate-400 mt-1 font-bold">
+                                <span id="currentWordCount">0 kata</span>
+                                <span>Minimum target: <span id="targetWordCount">150</span> kata</span>
+                            </div>
+                        </div>
+
+                        <button onclick="evaluateTaskDraft()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-xl text-xs flex justify-center items-center space-x-1.5 transition-all">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>Uji Kepatuhan Rubrik Tugas</span>
+                        </button>
+                    </div>
+
+                    <!-- Output Analisis Evaluator (Kanan) -->
+                    <div class="lg:col-span-7 bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider border-b pb-2 mb-4">Laporan Hasil Pemeriksaan Tugas</h3>
+                            
+                            <div class="space-y-4">
+                                <!-- Skor Bulat -->
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-white border rounded-2xl p-4 text-center shadow-sm w-32 flex-shrink-0">
+                                        <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Skor Tugas</p>
+                                        <p id="evaluationScore" class="text-4xl font-extrabold text-slate-400 mt-1">0</p>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <h4 id="evaluationRating" class="font-extrabold text-sm text-slate-400">Belum Ada Evaluasi</h4>
+                                        <p id="evaluationFeedbackSummary" class="text-xs text-slate-500 leading-relaxed">Silakan tulis draft tugas Anda dan tekan tombol uji kepatuhan untuk mendapatkan skor.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Detil Kriteria Pemeriksaan -->
+                                <div class="space-y-2">
+                                    <div class="p-3 bg-white rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                                        <span class="font-semibold text-slate-700">Kesesuaian Target Kata (Word Count)</span>
+                                        <span id="critWordCount" class="text-slate-400 font-bold"><i class="fas fa-minus-circle"></i></span>
+                                    </div>
+                                    <div class="p-3 bg-white rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                                        <span class="font-semibold text-slate-700">Aspek Kejelasan & Tata Bahasa</span>
+                                        <span id="critLanguage" class="text-slate-400 font-bold"><i class="fas fa-minus-circle"></i></span>
+                                    </div>
+                                    <div class="p-3 bg-white rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                                        <span class="font-semibold text-slate-700">Relevansi Pokok Materi (Kata Kunci)</span>
+                                        <span id="critKeywords" class="text-slate-400 font-bold"><i class="fas fa-minus-circle"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-[10px] text-slate-400 mt-6 italic">Sistem evaluasi di atas adalah alat bantu mandiri Lab Sastrabudi sebelum tugas dikirimkan ke Dr. Dwi Cahyono Aji, M.A.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB: FORUM ILMIAH SIMULATOR ================= -->
+        <div id="content-presentasi" class="tab-content space-y-6 fade-in hidden">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fas fa-microphone-lines text-rose-600 mr-2"></i> Forum Ilmiah & Presentasi Simulator (Week 13-15)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Latih kecakapan presentasi proposal PKM KI Anda dengan simulator berwaktu.</p>
+                    </div>
+                    <span class="bg-rose-100 text-rose-800 text-[10px] font-bold px-3 py-1 rounded">RPS Tugas 6</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Area Slide Simulator (Kiri) -->
+                    <div class="lg:col-span-8 space-y-4">
+                        <div class="bg-slate-900 text-white rounded-2xl p-6 md:p-8 aspect-video flex flex-col justify-between relative shadow-md">
+                            <!-- Header Slide -->
+                            <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2">
+                                <span>SLIDE PRESENTASI MAHASISWA</span>
+                                <span id="currentSlideNumber">SLIDE 1 dari 4</span>
+                            </div>
+
+                            <!-- Content Slide -->
+                            <div class="my-auto space-y-4 text-center">
+                                <h3 id="slideTitle" class="text-xl md:text-2xl font-extrabold text-yellow-400">Penerapan Tata Ruang Hijau Berbasis Mitigasi Bencana di Pesisir Tarakan</h3>
+                                <p id="slideSubtitle" class="text-xs md:text-sm text-slate-300">Gagasan Solusi PKM KI Terintegrasi Kurikulum MKWU Bahasa Indonesia</p>
+                                <div id="slideContentBox" class="hidden text-left bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 text-xs space-y-2 max-w-lg mx-auto">
+                                    <!-- Diisi lewat JS -->
+                                </div>
+                            </div>
+
+                            <!-- Footer Slide Controls -->
+                            <div class="flex justify-between items-center pt-2 border-t border-slate-800 text-xs">
+                                <button onclick="prevSlide()" class="text-slate-400 hover:text-white transition-colors"><i class="fas fa-chevron-left mr-1"></i> Sebelumnya</button>
+                                <span class="bg-slate-800 px-3 py-1 rounded-full text-[10px] text-yellow-500 font-bold tracking-widest uppercase">Lab Sastrabudi</span>
+                                <button onclick="nextSlide()" class="text-slate-400 hover:text-white transition-colors">Selanjutnya <i class="fas fa-chevron-right ml-1"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Cues / Catatan Presentasi Pembicara -->
+                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-start space-x-3">
+                            <i class="fas fa-lightbulb text-yellow-600 mt-0.5 text-sm"></i>
+                            <div class="space-y-1">
+                                <h4 class="font-bold text-yellow-800 text-xs">Petunjuk Pengucapan Presentasi (Speaker Cues)</h4>
+                                <p id="speakerCuesText" class="text-[11px] text-yellow-700 leading-relaxed">Buka presentasi dengan salam yang takzim, perkenalkan anggota tim lintas fakultas Anda, lalu sebutkan judul PKM-KI secara tegas dan artikulatif.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel Kontrol Presentasi (Kanan) -->
+                    <div class="lg:col-span-4 bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                        <div class="space-y-6">
+                            <!-- Timer -->
+                            <div class="text-center space-y-1">
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Durasi Tersisa (Maks 10 Menit)</span>
+                                <p id="presentationTimer" class="text-4xl font-black text-slate-800">10:00</p>
+                                <div class="flex justify-center space-x-2 pt-2">
+                                    <button onclick="toggleTimer()" id="btnTimerControl" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg text-[10px] transition-all"><i class="fas fa-play mr-1"></i> Mulai</button>
+                                    <button onclick="resetTimer()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-1.5 rounded-lg text-[10px] transition-all"><i class="fas fa-undo"></i> Reset</button>
+                                </div>
+                            </div>
+
+                            <!-- Peer Review Form -->
+                            <div class="space-y-3 pt-4 border-t">
+                                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Lembar Evaluasi Penampilan</h4>
+                                <div class="space-y-2 text-xs">
+                                    <label class="block text-slate-500 font-semibold">Artikulasi & Penggunaan Bahasa (1-100):</label>
+                                    <input type="number" id="reviewLangScore" class="w-full p-2 border rounded-lg" value="85" min="1" max="100">
+                                </div>
+                                <div class="space-y-2 text-xs">
+                                    <label class="block text-slate-500 font-semibold">Kekompakan Tim / Kolaborasi (1-100):</label>
+                                    <input type="number" id="reviewCollabScore" class="w-full p-2 border rounded-lg" value="80" min="1" max="100">
+                                </div>
+                                <button onclick="calculatePresentationScore()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-4 rounded-xl text-[10px] transition-all">
+                                    Hitung Kelayakan Presentasi
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="presentationGradeBox" class="hidden p-3 bg-white rounded-xl border border-slate-200 mt-4 text-center">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase">Predikat Kelayakan</p>
+                            <p id="presentationGradeText" class="text-base font-extrabold text-indigo-600 mt-0.5">SANGAT BAIK</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 py-8 text-center text-slate-400 text-sm mt-auto border-t border-slate-800 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p class="font-semibold text-slate-300">&copy; 2026 Laboratorium Sastrabudi - Universitas Borneo Tarakan</p>
+            <p class="text-xs text-slate-500">Mata Kuliah Wajib Umum Bahasa Indonesia | Institut Sains dan Teknologi Muhammadiyah Tarakan & UBT</p>
+            <div class="flex justify-center space-x-4 pt-4 text-xs">
+                <span class="hover:text-yellow-400 cursor-pointer"><i class="fas fa-circle-nodes mr-1"></i> Kode: GMKL1WD01</span>
+                <span class="hover:text-yellow-400 cursor-pointer"><i class="fas fa-layer-group mr-1"></i> Bobot: 2 SKS</span>
+                <span class="hover:text-yellow-400 cursor-pointer"><i class="fas fa-user-shield mr-1"></i> Admin Lab Sastrabudi</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT PROGRAM LOGIC -->
+    <script>
+        // WEEKLY SYLLABUS DATABASE MATCHING THE LOADED RPS
+        const SYLLABUS_DATABASE = {
+            1: {
+                title: "Minggu 1: Sejarah, Fungsi, dan Kedudukan Bahasa Indonesia",
+                weight: "5%",
+                cpmk: "Mahasiswa mampu menjelaskan Sejarah, Fungsi dan Kedudukan Bahasa Indonesia (C2, A2)",
+                method: "Kuliah & Diskusi Daring (TM: 1x(3x50\"))",
+                task: "Tugas 1: Menceritakan kembali video atau film (Tanah Air Beta) yang berkaitan dengan sejarah, Fungsi dan Kedudukan BI dalam bentuk ringkasan tertulis minimal 150 kata.",
+                rubric: "Kepatuhan tata bahasa baku, kejelasan alur ringkasan, minimal 150 kata (bobot 60% isi, 40% relevansi materi)."
+            },
+            2: {
+                title: "Minggu 2-4: Kalimat Efektif, Paragraf, dan Resensi",
+                weight: "15%",
+                cpmk: "Mahasiswa mampu menulis Kalimat Efektif, Paragraf, dan Resensi (C2, A2)",
+                method: "Kuliah & Diskusi Daring (TM: 1x(3x50\"))",
+                task: "Tugas 2: Menulis sekumpulan kalimat efektif yang padat, menyatukannya ke dalam paragraf logis, serta menulis resensi buku ilmiah.",
+                rubric: "Ketepatan penyusunan resensi, keberhasilan memangkas keborosan kata, penempatan tanda baca sesuai PUEBI."
+            },
+            3: {
+                title: "Minggu 5-7: Membuat Karya Ilmiah",
+                weight: "20%",
+                cpmk: "Mahasiswa mampu Membuat Karya Ilmiah (C3, A2)",
+                method: "Kuliah & Diskusi Daring (TM: 1x(3x50\"))",
+                task: "Tugas 3: Menyusun draf karya ilmiah sederhana berbentuk makalah terstruktur atau mereview jurnal akademik nasional.",
+                rubric: "Kesesuaian dengan etika pengutipan, kedalaman pembahasan, kelengkapan bab pembuka, isi, dan kesimpulan."
+            },
+            4: {
+                title: "Minggu 8: Evaluasi Tengah Semester (UTS)",
+                weight: "Review",
+                cpmk: "Melakukan review mendalam terhadap Jurnal / Skripsi pilihan secara tertulis.",
+                method: "Ujian Mandiri Tertulis",
+                task: "Evaluasi Tengah Semester: Menganalisis kelebihan, kelemahan, metode, dan relevansi suatu skripsi atau jurnal kebahasaan.",
+                rubric: "Ketepatan metodologis review jurnal, keaslian argumen penilai, dan kelancaran bahasa."
+            },
+            5: {
+                title: "Minggu 9-11: Menulis Proposal PKM Karya Ilmiah",
+                weight: "30%",
+                cpmk: "Mahasiswa mampu Menulis Proposal PKM Karya Ilmiah (C3, A2, P5)",
+                method: "Kuliah & Diskusi Daring (TM: 2x(3x50\"))",
+                task: "Tugas 4: Menyusun proposal PKM-KI secara berkelompok lintas fakultas (misal gabungan dengan Perencanaan Wilayah dan Kota).",
+                rubric: "Kemampuan menuangkan gagasan solutif, kesesuaian sistematika proposal PKM KI terbaru, ketepatan pilihan kebahasaan."
+            },
+            6: {
+                title: "Minggu 12: Dokumentasi Proses Pembuatan PKM",
+                weight: "10%",
+                cpmk: "Mahasiswa mampu Melaporkan Proses Pembuatan Proposal PKM (C3, A2, P5)",
+                method: "Kuliah & Diskusi Daring (TM: 2x(2x50\"))",
+                task: "Tugas 5: Melaporkan proses pembuatan proposal PKM dalam bentuk media sosial / video dokumenter berdurasi singkat ke YouTube.",
+                rubric: "Kejelasan isi video, kelancaran komunikasi verbal, kekompakan tim, kesantunan bahasa dalam rekaman."
+            },
+            7: {
+                title: "Minggu 13-15: Berbicara dalam Forum Ilmiah",
+                weight: "20%",
+                cpmk: "Mahasiswa mampu Berbicara dalam Forum Ilmiah (C3, A2, P5)",
+                method: "Kuliah & Diskusi Tatap Muka/Daring (TM: 2x(2x50\"))",
+                task: "Tugas 6: Mempresentasikan proposal PKM secara mandiri di depan kelas dengan bantuan rekaman video/film dokumenter yang sudah diunggah.",
+                rubric: "Kemampuan retorika akademik, kejelasan argumen saat menanggapi pertanyaan forum, efisiensi waktu presentasi."
+            },
+            8: {
+                title: "Minggu 16: Evaluasi Akhir Semester (UAS)",
+                weight: "Final",
+                cpmk: "Finalisasi penyusunan dan pengumpulan Proposal PKM KI siap submit.",
+                method: "Evaluasi Portofolio Mandiri / Kelompok",
+                task: "Evaluasi Akhir Semester: Menghasilkan tugas akhir semester berupa dokumen proposal PKM KI yang telah direvisi total.",
+                rubric: "Kelayakan proposal untuk diusulkan ke tingkat nasional, kesesuaian format ketat PKM, kemandirian pengeditan."
+            }
+        };
+
+        // MICRO QUIZ DATABASE (Week 1 Concept Study)
+        const MICRO_QUIZ = [
+            {
+                question: "Kapankah kedudukan Bahasa Indonesia resmi ditetapkan sebagai bahasa negara?",
+                options: [
+                    "28 Oktober 1928 (Sumpah Pemuda)",
+                    "18 Agustus 1945 (Pasal 36 UUD 1945)",
+                    "17 Agustus 1945 (Proklamasi)",
+                    "2 Mei 1980 (Hari Pendidikan)"
+                ],
+                correct: 1,
+                explanation: "Kedudukan Bahasa Indonesia sebagai bahasa resmi negara ditetapkan pada tanggal 18 Agustus 1945 bersamaan dengan disahkannya UUD 1945."
+            },
+            {
+                question: "Salah satu kedudukan Bahasa Indonesia yang disepakati dalam Sumpah Pemuda adalah sebagai...",
+                options: [
+                    "Bahasa Negara",
+                    "Bahasa Resmi Lembaga",
+                    "Bahasa Persatuan / Nasional",
+                    "Bahasa Pengantar Sekolah"
+                ],
+                correct: 2,
+                explanation: "Sebagai lambang kebanggaan nasional dan pemersatu bangsa, Bahasa Indonesia berkedudukan sebagai Bahasa Nasional sejak Sumpah Pemuda."
+            },
+            {
+                question: "Apa fungsi utama Bahasa Indonesia dalam kedudukannya sebagai bahasa negara?",
+                options: [
+                    "Bahasa pengantar resmi di lembaga pendidikan",
+                    "Alat komunikasi antar daerah untuk perdagangan saja",
+                    "Bahasa gaul remaja pemersatu wilayah",
+                    "Lambang identitas suku masing-masing"
+                ],
+                correct: 0,
+                explanation: "Salah satu fungsi bahasa negara adalah sebagai bahasa pengantar resmi di lembaga pendidikan, administrasi kenegaraan, dan hukum."
+            }
+        ];
+
+        // KALIMAT EFEKTIF PLAYGROUND DATABASE
+        const BROKEN_SENTENCES_DATABASE = [
+            {
+                broken: "Bagi para mahasiswa-mahasiswa sekalian wajib hadir tepat waktu.",
+                explanation: "Terjadi pemborosan kata (pleonasme) karena menggunakan kata 'para', pengulangan kata 'mahasiswa-mahasiswa' dan kata 'sekalian'. Selain itu, preposisi 'Bagi' membuat subjek menjadi kabur.",
+                correctPatterns: [
+                    "Mahasiswa wajib hadir tepat waktu.",
+                    "Para mahasiswa wajib hadir tepat waktu.",
+                    "Mahasiswa sekalian wajib hadir tepat waktu."
+                ]
+            },
+            {
+                broken: "Rencana pembangunan daerah yang mana sangat penting untuk ditinjau ulang.",
+                explanation: "Penggunaan bentuk 'yang mana' melanggar aturan tata bahasa Indonesia karena mengadopsi struktur bahasa Inggris 'which'. Seharusnya dihilangkan agar kalimat menjadi efektif.",
+                correctPatterns: [
+                    "Rencana pembangunan daerah sangat penting untuk ditinjau ulang.",
+                    "Rencana pembangunan daerah penting ditinjau ulang."
+                ]
+            },
+            {
+                broken: "Meskipun draf proposal sudah selesai, tetapi ketua kelompok belum merapikannya.",
+                explanation: "Terdapat kegandaan konjungsi bertentangan ('Meskipun' dan 'tetapi') dalam satu kalimat majemuk bertingkat. Cukup gunakan salah satu saja.",
+                correctPatterns: [
+                    "Meskipun draf proposal sudah selesai, ketua kelompok belum merapikannya.",
+                    "Draf proposal sudah selesai, tetapi ketua kelompok belum merapikannya."
+                ]
+            },
+            {
+                broken: "Langkah-langkah pembuatan proposal meliputi penentuan judul, merumuskan masalah, dan menyusun metode.",
+                explanation: "Kalimat tidak sejajar (paralelisme rusak). Kata 'penentuan' adalah nomina, sedangkan 'merumuskan' dan 'menyusun' adalah verba. Harus disejajarkan.",
+                correctPatterns: [
+                    "Langkah-langkah pembuatan proposal meliputi penentuan judul, perumusan masalah, dan penyusunan metode.",
+                    "Langkah-langkah pembuatan proposal meliputi menentukan judul, merumuskan masalah, dan menyusun metode."
+                ]
+            }
+        ];
+
+        // PRESENTATION SIMULATOR DATA
+        const SLIDES_DATABASE = [
+            {
+                title: "Sistematika & Judul PKM-KI",
+                subtitle: "Gagasan Solusi PKM KI Terintegrasi Kurikulum MKWU",
+                content: [
+                    "• Judul harus kreatif, unik, singkat, dan menggambarkan solusi.",
+                    "• Merupakan gagasan orisinal dari mahasiswa lintas fakultas.",
+                    "• Anggota kelompok minimal terdiri dari program studi berbeda."
+                ],
+                cues: "Buka presentasi dengan salam yang takzim, perkenalkan anggota tim lintas prodi Anda, lalu sebutkan judul PKM-KI secara tegas dan artikulatif."
+            },
+            {
+                title: "Latar Belakang & Masalah",
+                subtitle: "Membahas Pokok Kerawanan dan Urgensi Masalah",
+                content: [
+                    "• Paparkan data faktual (bukan sekadar opini).",
+                    "• Identifikasi kesenjangan antara harapan teoritis dengan kenyataan lapangan.",
+                    "• Berikan penekanan kuat mengapa masalah ini harus diselesaikan sekarang."
+                ],
+                cues: "Gunakan nada bicara yang persuasif dan tawarkan bukti data numerik untuk meyakinkan reviewer."
+            },
+            {
+                title: "Solusi Kreatif & Metode",
+                subtitle: "Tahapan Implementasi Gagasan di Lapangan",
+                content: [
+                    "• Berikan alur berpikir penyelesaian masalah yang runtut.",
+                    "• Jelaskan metodologi pelaksanaan gagasan (langkah demi langkah).",
+                    "• Jelaskan peran masing-masing anggota kelompok lintas ilmu."
+                ],
+                cues: "Fokus pada unsur keunikan dan inovasi gagasan kelompok Anda dibanding solusi-solusi yang sudah ada sebelumnya."
+            },
+            {
+                title: "Target Luaran & Kesimpulan",
+                subtitle: "Kontribusi Nyata Terhadap Perkembangan Sains",
+                content: [
+                    "• Hasil akhir berupa artikel ilmiah / karya tulis yang dipublikasikan.",
+                    "• Memberikan dampak positif bagi masyarakat luas.",
+                    "• Menyajikan draf penutup yang mantap dan tegas."
+                ],
+                cues: "Akhiri presentasi dengan penutup yang optimis, ucapkan terima kasih kepada dosen pembimbing Dr. Dwi Cahyono Aji, M.A. dan moderator."
+            }
+        ];
+
+        // APPLICATION STATE
+        let activeTab = 'dashboard';
+        let currentSyllabusWeek = 1;
+        let activeSentenceIndex = 0;
+        let microQuizIndex = 0;
+        let microQuizScore = 0;
+        
+        let currentSlideIndex = 0;
+        let timerInterval = null;
+        let timerSeconds = 600; // 10 minutes
+
+        // INITIALIZATION
+        window.onload = () => {
+            switchTab('dashboard');
+            loadSyllabusWeek(1);
+            loadSentencePlayground();
+            updateAssignmentInfo();
+        };
+
+        // TAB SWITCHING
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
+
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).classList.add('active-tab');
+            activeTab = tabId;
+
+            // Stop timer if leaving presentation tab
+            if (tabId !== 'presentasi' && timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                document.getElementById('btnTimerControl').innerHTML = '<i class="fas fa-play mr-1"></i> Mulai';
+            }
+        }
+
+        // SPEECH SYNTHESIS (Intro Dr. Dwi Cahyono Aji, M.A.)
+        function playIntroSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = "Selamat datang di Portal Pembelajaran Bahasa Indonesia. Saya Dokter Dwi Cahyono Aji, M.A. Mari ikuti seluruh modul pembelajaran dari sejarah hingga penyusunan proposal PKM dengan dedikasi penuh.";
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                const voices = window.speechSynthesis.getVoices();
+                const indonesianVoice = voices.find(v => v.lang.includes('id-ID'));
+                if (indonesianVoice) {
+                    utterance.voice = indonesianVoice;
+                }
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+                showToast("Memutar audio sambutan dosen...");
+            } else {
+                showToast("Browser Anda tidak mendukung Text-to-Speech.");
+            }
+        }
+
+        // TOAST FEEDBACK SYSTEM
+        function showToast(message) {
+            const toast = document.getElementById('appToast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => { toast.classList.add('hidden'); }, 3500);
+        }
+
+        function hideToast() {
+            document.getElementById('appToast').classList.add('hidden');
+        }
+
+        // WEEKLY RPS LOAD
+        function loadSyllabusWeek(weekId) {
+            currentSyllabusWeek = weekId;
+            document.querySelectorAll('.week-sel-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white');
+                btn.classList.add('hover:bg-slate-100', 'text-slate-700');
+            });
+
+            const activeBtn = document.getElementById(`weekBtn-${weekId}`);
+            activeBtn.classList.remove('hover:bg-slate-100', 'text-slate-700');
+            activeBtn.classList.add('bg-slate-900', 'text-white');
+
+            const data = SYLLABUS_DATABASE[weekId];
+            document.getElementById('syllabusWeekTitle').textContent = data.title;
+            document.getElementById('syllabusWeekWeight').textContent = `Bobot: ${data.weight}`;
+            document.getElementById('syllabusWeekCpmk').innerHTML = data.cpmk;
+            document.getElementById('syllabusWeekMethod').textContent = data.method;
+            document.getElementById('syllabusWeekTaskDesc').textContent = data.task;
+            document.getElementById('syllabusWeekRubric').textContent = data.rubric;
+        }
+
+        // MICRO QUIZ (Week 1 Concept)
+        function startMicroQuiz() {
+            microQuizIndex = 0;
+            microQuizScore = 0;
+            document.getElementById('microQuizBox').classList.remove('hidden');
+            showMicroQuestion();
+        }
+
+        function showMicroQuestion() {
+            const q = MICRO_QUIZ[microQuizIndex];
+            document.getElementById('quizQuestCounter').textContent = `Soal ${microQuizIndex + 1} dari ${MICRO_QUIZ.length}`;
+            document.getElementById('quizScoreCount').textContent = `Skor: ${microQuizScore}`;
+            document.getElementById('quizQuestText').textContent = q.question;
+
+            const grid = document.getElementById('quizAnswersGrid');
+            grid.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "p-3 text-left bg-white border border-slate-300 rounded-xl text-xs font-semibold hover:border-yellow-500 hover:bg-yellow-50 transition-all";
+                btn.onclick = () => submitMicroAnswer(idx);
+                btn.innerHTML = opt;
+                grid.appendChild(btn);
+            });
+        }
+
+        function submitMicroAnswer(selectedIdx) {
+            const q = MICRO_QUIZ[microQuizIndex];
+            const isCorrect = (selectedIdx === q.correct);
+            
+            if (isCorrect) {
+                microQuizScore += 33;
+                showToast("Benar sekali! Lanjutkan.");
+            } else {
+                showToast("Jawaban kurang tepat. Pelajari lagi.");
+            }
+
+            microQuizIndex++;
+            if (microQuizIndex < MICRO_QUIZ.length) {
+                showMicroQuestion();
+            } else {
+                if (microQuizScore > 90) microQuizScore = 100; // Round to 100
+                document.getElementById('quizScoreCount').textContent = `Skor Akhir: ${microQuizScore}`;
+                document.getElementById('quizAnswersGrid').innerHTML = `
+                    <div class="col-span-full p-4 bg-yellow-50 text-yellow-800 rounded-xl text-xs space-y-2 border border-yellow-200">
+                        <p class="font-bold">Latihan Selesai! Skor Akhir Anda: ${microQuizScore}/100</p>
+                        <p class="text-slate-600 leading-relaxed">Anda telah mempelajari kedudukan dan fungsi dasar Bahasa Indonesia secara interaktif sesuai target C2 di RPS.</p>
+                        <button onclick="startMicroQuiz()" class="bg-yellow-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-[10px] mt-2">Ulangi Latihan</button>
+                    </div>
+                `;
+            }
+        }
+
+        // KALIMAT EFEKTIF PLAYGROUND
+        function loadSentencePlayground() {
+            const list = document.getElementById('brokenSentencesList');
+            list.innerHTML = '';
+
+            BROKEN_SENTENCES_DATABASE.forEach((item, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `sentenceSelBtn-${idx}`;
+                btn.className = `w-full p-3 text-left rounded-xl border text-xs font-semibold transition-all flex items-start space-x-2 ${idx === 0 ? 'border-yellow-500 bg-yellow-50 text-slate-800' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`;
+                btn.onclick = () => selectBrokenSentence(idx);
+                btn.innerHTML = `<span class="bg-red-100 text-red-700 px-1.5 py-0.5 rounded text-[9px] font-bold">Rusak</span> <span>"${item.broken}"</span>`;
+                list.appendChild(btn);
+            });
+
+            selectBrokenSentence(0);
+        }
+
+        function selectBrokenSentence(index) {
+            activeSentenceIndex = index;
+            document.querySelectorAll('[id^="sentenceSelBtn-"]').forEach(btn => {
+                btn.className = "w-full p-3 text-left rounded-xl border text-xs font-semibold bg-white text-slate-600 border-slate-200 hover:bg-slate-50 transition-all flex items-start space-x-2";
+            });
+
+            const activeBtn = document.getElementById(`sentenceSelBtn-${index}`);
+            if (activeBtn) {
+                activeBtn.className = "w-full p-3 text-left rounded-xl border text-xs font-semibold border-yellow-500 bg-yellow-50 text-slate-800 transition-all flex items-start space-x-2";
+            }
+
+            const data = BROKEN_SENTENCES_DATABASE[index];
+            document.getElementById('selectedBrokenSentence').textContent = `"${data.broken}"`;
+            document.getElementById('brokenErrorExplanation').textContent = data.explanation;
+            document.getElementById('userCorrectedSentence').value = '';
+            document.getElementById('correctionFeedbackBox').classList.add('hidden');
+        }
+
+        function evaluateUserSentence() {
+            const userText = document.getElementById('userCorrectedSentence').value.trim();
+            if (!userText) {
+                showToast("Harap ketik kalimat perbaikan Anda terlebih dahulu!");
+                return;
+            }
+
+            const data = BROKEN_SENTENCES_DATABASE[activeSentenceIndex];
+            
+            // Clean strings for fuzzy matching
+            const sanitize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const sanitizedUser = sanitize(userText);
+
+            let isCorrect = false;
+            data.correctPatterns.forEach(pattern => {
+                if (sanitizedUser === sanitize(pattern)) {
+                    isCorrect = true;
+                }
+            });
+
+            const fBox = document.getElementById('correctionFeedbackBox');
+            const fIcon = document.getElementById('correctionFeedbackIcon');
+            const fStatus = document.getElementById('correctionFeedbackStatus');
+            const fText = document.getElementById('correctionFeedbackText');
+
+            fBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                fBox.className = "mt-6 p-5 rounded-2xl border flex items-start space-x-4 bg-emerald-50 border-emerald-200 text-emerald-900";
+                fIcon.className = "p-3 rounded-full text-xl flex-shrink-0 bg-emerald-100 text-emerald-600 fa-solid fa-circle-check";
+                fStatus.textContent = "Sangat Efektif!";
+                fText.textContent = "Kalimat Anda berhasil dihemat dan disesuaikan mengikuti kaidah tata bahasa baku Indonesia (tidak pleonasme, lugas, dan logis).";
+            } else {
+                fBox.className = "mt-6 p-5 rounded-2xl border flex items-start space-x-4 bg-rose-50 border-rose-200 text-rose-900";
+                fIcon.className = "p-3 rounded-full text-xl flex-shrink-0 bg-rose-100 text-rose-600 fa-solid fa-circle-xmark";
+                fStatus.textContent = "Belum Efektif";
+                fText.innerHTML = `Versi Anda masih mengandung kelemahan sintaksis. Coba perhatikan rujukan kalimat efektif ini:<br><strong class="block mt-1 font-bold text-slate-800">"${data.correctPatterns[0]}"</strong>`;
+            }
+        }
+
+        function resetKalimatPlayground() {
+            selectBrokenSentence(0);
+            showToast("Ruang kerja kalimat efektif diatur ulang.");
+        }
+
+        // PKM KI PROPOSAL BUILDER
+        function generatePKMOutline() {
+            const title = document.getElementById('pkmTitle').value.trim();
+            const leader = document.getElementById('pkmLeader').value.trim();
+            const faculty = document.getElementById('pkmFaculty').value.trim();
+            const members = document.getElementById('pkmMembers').value.trim();
+            const bg = document.getElementById('pkmBackground').value.trim();
+            const method = document.getElementById('pkmMethodology').value.trim();
+
+            if (!title || !leader || !faculty || !members || !bg || !method) {
+                showToast("Mohon lengkapi seluruh isian draf proposal PKM!");
+                return;
+            }
+
+            // Update Preview Panel
+            document.getElementById('prevTitle').textContent = title;
+            document.getElementById('prevLeader').textContent = leader;
+            document.getElementById('prevFaculty').textContent = faculty;
+            document.getElementById('prevMembers').textContent = members;
+            document.getElementById('prevBackground').textContent = bg;
+            document.getElementById('prevMethodology').textContent = method;
+
+            // Remove placeholder styling
+            document.getElementById('prevBackground').classList.remove('italic', 'text-slate-500');
+            document.getElementById('prevMethodology').classList.remove('italic', 'text-slate-500');
+
+            showToast("Draft PKM berhasil disematkan ke Preview!");
+        }
+
+        function printPKMOutline() {
+            const previewContent = document.getElementById('pkmPreviewArea').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Draft PKM KI - Lab Sastrabudi UBT</title>
+                    <style>
+                        body { font-family: 'Inter', sans-serif; padding: 40px; color: #1e293b; }
+                        h4 { text-align: center; margin: 5px 0; }
+                        .divider { border-bottom: 2px solid #000; margin: 20px 0; }
+                        p { font-size: 12px; line-height: 1.6; }
+                        h5 { margin-top: 20px; font-size: 14px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+                    </style>
+                </head>
+                <body>
+                    ${previewContent}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+        }
+
+        // EVALUATOR WORKSPACE (Assignment Checker)
+        const TASK_RULES = {
+            task1: {
+                target: 150,
+                keywords: ['sejarah', 'film', 'tanah air beta', 'fungsi', 'kedudukan', 'nasional', 'pemersatu'],
+                description: "Tugas 1: Membuat ringkasan film (Tanah Air Beta) berkaitan dengan sejarah, fungsi, dan kedudukan BI dalam bentuk ringkasan tertulis minimal 150 kata."
+            },
+            task2: {
+                target: 200,
+                keywords: ['resensi', 'identitas', 'buku', 'kelebihan', 'kelemahan', 'sinopsis', 'penerbit'],
+                description: "Tugas 2: Menulis resensi kritis buku ilmiah / sastra secara mendalam yang memuat identitas lengkap buku."
+            },
+            task3: {
+                target: 300,
+                keywords: ['makalah', 'jurnal', 'metode', 'analisis', 'pembahasan', 'kesimpulan', 'pendahuluan'],
+                description: "Tugas 3: Menyusun draf karya ilmiah sederhana berbentuk makalah terstruktur atau mereview jurnal akademik nasional."
+            },
+            task4: {
+                target: 400,
+                keywords: ['pkm', 'kreativitas', 'gagasan', 'inovasi', 'metode pelaksanaan', 'luaran', 'mitra'],
+                description: "Tugas 4: Menyusun proposal PKM-KI secara berkelompok lintas fakultas (sistematika lengkap sesuai pedoman Dikti)."
+            }
+        };
+
+        function updateAssignmentInfo() {
+            const selection = document.getElementById('selectedAssignmentType').value;
+            const rules = TASK_RULES[selection];
+            
+            document.getElementById('assignmentRubricDetails').textContent = rules.description;
+            document.getElementById('targetWordCount').textContent = rules.target;
+            document.getElementById('studentAssignmentDraft').value = '';
+            document.getElementById('currentWordCount').textContent = '0 kata';
+            
+            // Clear scorecard
+            document.getElementById('evaluationScore').textContent = '0';
+            document.getElementById('evaluationScore').className = "text-4xl font-extrabold text-slate-400 mt-1";
+            document.getElementById('evaluationRating').textContent = "Belum Ada Evaluasi";
+            document.getElementById('evaluationRating').className = "font-extrabold text-sm text-slate-400";
+            document.getElementById('evaluationFeedbackSummary').textContent = "Tulis draf Anda lalu tekan tombol uji kepatuhan.";
+            
+            document.getElementById('critWordCount').innerHTML = '<i class="fas fa-minus-circle text-slate-400"></i>';
+            document.getElementById('critLanguage').innerHTML = '<i class="fas fa-minus-circle text-slate-400"></i>';
+            document.getElementById('critKeywords').innerHTML = '<i class="fas fa-minus-circle text-slate-400"></i>';
+        }
+
+        // Realtime Word Counter
+        document.getElementById('studentAssignmentDraft').oninput = function() {
+            const text = this.value.trim();
+            const wordCount = text === '' ? 0 : text.split(/\s+/).length;
+            document.getElementById('currentWordCount').textContent = `${wordCount} kata`;
+        };
+
+        function evaluateTaskDraft() {
+            const selection = document.getElementById('selectedAssignmentType').value;
+            const text = document.getElementById('studentAssignmentDraft').value.trim();
+            const rules = TASK_RULES[selection];
+
+            if (!text) {
+                showToast("Harap tuliskan isi draf tugas Anda terlebih dahulu!");
+                return;
+            }
+
+            const wordCount = text.split(/\s+/).length;
+            
+            // 1. Check word target
+            const wordPassed = wordCount >= rules.target;
+            const critWC = document.getElementById('critWordCount');
+            if (wordPassed) {
+                critWC.innerHTML = '<i class="fas fa-check-circle text-emerald-500"></i> <span class="text-emerald-600">Lulus</span>';
+            } else {
+                critWC.innerHTML = '<i class="fas fa-times-circle text-rose-500"></i> <span class="text-rose-600">Belum Cukup</span>';
+            }
+
+            // 2. Check keywords (rubric relevance)
+            let matchCount = 0;
+            const textLower = text.toLowerCase();
+            rules.keywords.forEach(kw => {
+                if (textLower.includes(kw)) matchCount++;
+            });
+
+            const critKW = document.getElementById('critKeywords');
+            const kwPercentage = (matchCount / rules.keywords.length) * 100;
+            if (kwPercentage >= 50) {
+                critKW.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> <span class="text-emerald-600">Relevan (${matchCount}/${rules.keywords.length})</span>`;
+            } else {
+                critKW.innerHTML = `<i class="fas fa-exclamation-triangle text-amber-500"></i> <span class="text-amber-600">Kurang Fokus (${matchCount}/${rules.keywords.length})</span>`;
+            }
+
+            // 3. Language & spelling check (simulated with standard spelling patterns)
+            const containsSlashedDoubleTerms = textLower.match(/\b\w+-\w+\b/); // Reduplication
+            const hasScientificVibe = textLower.includes('bahwasanya') || textLower.includes('adalah') || textLower.includes('merupakan') || textLower.includes('analisis');
+            const critLang = document.getElementById('critLanguage');
+            
+            let langPassed = false;
+            if (hasScientificVibe) {
+                critLang.innerHTML = '<i class="fas fa-check-circle text-emerald-500"></i> <span class="text-emerald-600">Baku / Akademis</span>';
+                langPassed = true;
+            } else {
+                critLang.innerHTML = '<i class="fas fa-exclamation-triangle text-amber-500"></i> <span class="text-amber-600">Cenderung Non-Akademis</span>';
+            }
+
+            // 4. Score Calculation
+            let score = 40; // Base score
+            if (wordPassed) score += 30;
+            if (kwPercentage >= 50) score += 20;
+            if (langPassed) score += 10;
+
+            const scoreEl = document.getElementById('evaluationScore');
+            const ratingEl = document.getElementById('evaluationRating');
+            const summaryEl = document.getElementById('evaluationFeedbackSummary');
+
+            scoreEl.textContent = score;
+
+            if (score >= 80) {
+                scoreEl.className = "text-4xl font-extrabold text-emerald-600 mt-1";
+                ratingEl.textContent = "SANGAT BAIK / MEMENUHI SYARAT";
+                ratingEl.className = "font-extrabold text-sm text-emerald-600";
+                summaryEl.textContent = "Draf Anda sangat patuh pada rubrik penilaian RPS. Kosa kata relevan dan kuantitas kata memenuhi batas aman.";
+            } else if (score >= 60) {
+                scoreEl.className = "text-4xl font-extrabold text-amber-500 mt-1";
+                ratingEl.textContent = "CUKUP / PERLU REVISI";
+                ratingEl.className = "font-extrabold text-sm text-amber-500";
+                summaryEl.textContent = "Data mencukupi namun kuantitas kata atau fokus rujukan materi (kata kunci) masih perlu ditingkatkan sedikit lagi.";
+            } else {
+                scoreEl.className = "text-4xl font-extrabold text-rose-600 mt-1";
+                ratingEl.textContent = "KURANG / TIDAK LOLOS RUBRIK";
+                ratingEl.className = "font-extrabold text-sm text-rose-600";
+                summaryEl.textContent = "Harap tambahkan bahasan secara lebih mendalam dan perhatikan syarat batasan kata minimal pada penugasan terkait.";
+            }
+
+            showToast("Evaluasi Rubrik Selesai!");
+        }
+
+        // PRESENTATION SIMULATOR TIMER
+        function toggleTimer() {
+            const btn = document.getElementById('btnTimerControl');
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                btn.innerHTML = '<i class="fas fa-play mr-1"></i> Mulai';
+                showToast("Simulator Dijeda.");
+            } else {
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        btn.innerHTML = '<i class="fas fa-play mr-1"></i> Mulai';
+                        showToast("Waktu Presentasi Habis!");
+                    }
+                }, 1000);
+                btn.innerHTML = '<i class="fas fa-pause mr-1"></i> Jeda';
+                showToast("Simulator Presentasi Berjalan.");
+            }
+        }
+
+        function resetTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            timerSeconds = 600;
+            updateTimerDisplay();
+            document.getElementById('btnTimerControl').innerHTML = '<i class="fas fa-play mr-1"></i> Mulai';
+            showToast("Timer Presentasi Diatur Ulang.");
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            document.getElementById('presentationTimer').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Slide navigations
+        function nextSlide() {
+            if (currentSlideIndex < SLIDES_DATABASE.length - 1) {
+                currentSlideIndex++;
+                renderActiveSlide();
+            } else {
+                showToast("Ini adalah slide akhir.");
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                renderActiveSlide();
+            } else {
+                showToast("Ini adalah slide awal.");
+            }
+        }
+
+        function renderActiveSlide() {
+            const slide = SLIDES_DATABASE[currentSlideIndex];
+            document.getElementById('currentSlideNumber').textContent = `SLIDE ${currentSlideIndex + 1} dari ${SLIDES_DATABASE.length}`;
+            document.getElementById('slideTitle').textContent = slide.title;
+            document.getElementById('slideSubtitle').textContent = slide.subtitle;
+            document.getElementById('speakerCuesText').textContent = slide.cues;
+
+            const contentBox = document.getElementById('slideContentBox');
+            contentBox.classList.remove('hidden');
+            contentBox.innerHTML = '';
+            
+            slide.content.forEach(line => {
+                const p = document.createElement('p');
+                p.textContent = line;
+                contentBox.appendChild(p);
+            });
+        }
+
+        function calculatePresentationScore() {
+            const scoreLang = parseInt(document.getElementById('reviewLangScore').value) || 0;
+            const scoreCollab = parseInt(document.getElementById('reviewCollabScore').value) || 0;
+
+            const average = (scoreLang + scoreCollab) / 2;
+            const gradeBox = document.getElementById('presentationGradeBox');
+            const gradeText = document.getElementById('presentationGradeText');
+
+            gradeBox.classList.remove('hidden');
+
+            if (average >= 85) {
+                gradeText.textContent = "SANGAT MEMUASKAN / LAYAK NASIONAL";
+                gradeText.className = "text-xs font-extrabold text-emerald-600 mt-0.5";
+            } else if (average >= 70) {
+                gradeText.textContent = "BAIK / LAYAK DENGAN REVISI";
+                gradeText.className = "text-xs font-extrabold text-yellow-600 mt-0.5";
+            } else {
+                gradeText.textContent = "KURANG LAYAK / PERBAIKI STRUKTUR";
+                gradeText.className = "text-xs font-extrabold text-rose-600 mt-0.5";
+            }
+
+            showToast("Hasil Kelayakan Presentasi Diperbarui.");
+        }
+    </script>
+</body>
+</html>
