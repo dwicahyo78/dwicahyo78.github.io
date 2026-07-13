@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Sastrabudi - Analisis Sintaksis PBI UBT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .tag-S { background-color: #3b82f6; color: white; } /* Biru */
+        .tag-P { background-color: #ef4444; color: white; } /* Merah */
+        .tag-O { background-color: #10b981; color: white; } /* Hijau */
+        .tag-Pel { background-color: #f59e0b; color: white; } /* Kuning/Emas */
+        .tag-K { background-color: #8b5cf6; color: white; } /* Ungu */
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Header Lab Sastrabudi -->
+    <!-- Bagean header aplikasi -->
+    <header class="bg-slate-900 text-white shadow-lg border-b-4 border-yellow-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="bg-yellow-500 p-3 rounded-full text-slate-900">
+                    <i class="fas fa-microscope text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">Lab SastraBudi</h1>
+                    <p class="text-sm text-slate-300">Prodi Pendidikan Bahasa Indonesia - Universitas Borneo Tarakan</p>
+                </div>
+            </div>
+            <div class="hidden md:block text-right">
+                <p class="text-sm font-semibold text-yellow-400">Modul Analisis Sintaksis</p>
+                <p class="text-xs text-slate-400">Fungsi, Kategori, Peran & Teori</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Kolom Kiri: Input & Editor -->
+        <!-- Bagean kiwa kanggo input lan ngedit frasa -->
+        <div class="lg:col-span-5 space-y-6">
+            
+            <!-- Card Input Kalimat -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden" id="inputCard">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                    <h2 class="text-lg font-semibold text-slate-800 flex items-center">
+                        <i class="fas fa-pen-nib mr-2 text-blue-600"></i> Masukkan Kalimat
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <textarea id="sentenceInput" rows="4" class="w-full p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-slate-700" placeholder="Contoh: Mahasiswa PBI sedang membaca buku sintaksis di perpustakaan."></textarea>
+                    <button onclick="processSentence()" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex justify-center items-center">
+                        <i class="fas fa-cogs mr-2"></i> Analisis Otomatis
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card Editor Frasa (Muncul setelah analisis) -->
+            <div id="editorCard" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hidden fade-in">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                    <h2 class="text-lg font-semibold text-slate-800 flex items-center">
+                        <i class="fas fa-sliders-h mr-2 text-yellow-500"></i> Penyesuaian Analisis
+                    </h2>
+                    <button onclick="resetApp()" class="text-sm text-red-600 hover:text-red-800 font-medium">
+                        <i class="fas fa-redo mr-1"></i> Reset
+                    </button>
+                </div>
+                <div class="p-6">
+                    <p class="text-sm text-slate-500 mb-4">Sistem mencoba memenggal fungsi secara otomatis. Sesuaikan teks atau fungsi di bawah ini jika terdapat kekeliruan analisis.</p>
+                    
+                    <div id="chunkEditorList" class="space-y-3">
+                        <!-- Daftar frasa akan dimuat di sini -->
+                    </div>
+
+                    <button onclick="addEmptyChunk()" class="mt-4 text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                        <i class="fas fa-plus-circle mr-1"></i> Tambah Konstituen Baru
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Panel Info Teori Singkat -->
+            <div class="bg-blue-50 rounded-xl p-5 border border-blue-100">
+                <h3 class="font-semibold text-blue-800 mb-2 text-sm flex items-center"><i class="fas fa-info-circle mr-2"></i> Rujukan Teoretis</h3>
+                <p class="text-xs text-blue-700 leading-relaxed">
+                    Analisis ini merujuk pada konsep Tata Bahasa Baku Bahasa Indonesia (Alwi, dkk.). Penentuan <strong>S-P-O-Pel-K</strong> didasarkan pada perilaku sintaksis, kemampuan transformasi pasif, dan valensi verba.
+                </p>
+            </div>
+        </div>
+
+        <!-- Kolom Kanan: Hasil Analisis -->
+        <!-- Bagean tengen kanggo nampilake asil analisis -->
+        <div class="lg:col-span-7 space-y-6 hidden fade-in" id="resultCard">
+            
+            <!-- 1. Struktur Fungsi Sintaksis -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                    <h2 class="text-lg font-semibold text-slate-800 flex items-center">
+                        <i class="fas fa-sitemap mr-2 text-blue-600"></i> 1. Struktur Fungsi Sintaksis
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div id="visualStructure" class="flex flex-wrap gap-3 items-stretch">
+                        <!-- Kotak visual S-P-O-K -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Kategori & Peran Semantis -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                    <h2 class="text-lg font-semibold text-slate-800 flex items-center">
+                        <i class="fas fa-tags mr-2 text-green-600"></i> 2. Analisis Kategori & Peran
+                    </h2>
+                    <span id="sentenceCategory" class="px-3 py-1 bg-green-100 text-green-800 text-xs font-bold rounded-full">Kalimat Verbal</span>
+                </div>
+                <div class="p-0 overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Konstituen</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Fungsi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Kategori Kata/Frasa</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Peran Semantis</th>
+                            </tr>
+                        </thead>
+                        <tbody id="analysisTableBody" class="bg-white divide-y divide-slate-200">
+                            <!-- Data tabel -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. Pembuktian Teoretis -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                    <h2 class="text-lg font-semibold text-slate-800 flex items-center">
+                        <i class="fas fa-book-open mr-2 text-purple-600"></i> 3. Pembuktian Fungsi Berdasarkan Teori
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div id="theoryProofs" class="space-y-4">
+                        <!-- Paragraf pembuktian -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 py-6 text-center text-slate-400 text-sm mt-auto border-t border-slate-800">
+        <p>&copy; 2026 Laboratorium Sastrabudi - Prodi Pendidikan Bahasa Indonesia</p>
+        <p class="mt-1 text-xs">Universitas Borneo Tarakan</p>
+    </footer>
+
+    <script>
+        // Data panyimpenan frasa (State aplikasi)
+        let chunks = [];
+
+        // Fungsi utama kanggo miwiti proses analisis
+        function processSentence() {
+            const text = document.getElementById('sentenceInput').value.trim();
+            if (!text) {
+                alert("Silakan masukkan kalimat terlebih dahulu.");
+                return;
+            }
+            
+            // Heuristik sederhana kanggo medhot ukara otomatis
+            chunks = heuristicChunking(text);
+            
+            // Nampilake antarmuka asil
+            document.getElementById('inputCard').classList.add('hidden');
+            document.getElementById('editorCard').classList.remove('hidden');
+            document.getElementById('resultCard').classList.remove('hidden');
+            
+            renderAll();
+        }
+
+        // Fungsi kanggo mbalekake menyang kahanan wiwitan
+        function resetApp() {
+            chunks = [];
+            document.getElementById('sentenceInput').value = '';
+            document.getElementById('inputCard').classList.remove('hidden');
+            document.getElementById('editorCard').classList.add('hidden');
+            document.getElementById('resultCard').classList.add('hidden');
+        }
+
+        // Nggawe potongan otomatis adhedhasar pola umum B. Indonesia
+        function heuristicChunking(text) {
+            let tokens = text.split(/\s+/);
+            let result = [];
+            let currentText = [];
+            let currentTag = 'S';
+            let hasP = false;
+            let pType = 'nominal'; // Default
+
+            for (let i = 0; i < tokens.length; i++) {
+                let w = tokens[i].toLowerCase();
+                let cleanW = w.replace(/[^a-z0-9-]/g, '');
+
+                // Deteksi Keterangan (Preposisi)
+                if (['di', 'ke', 'dari', 'pada', 'dalam', 'dengan', 'untuk', 'sejak', 'karena', 'oleh', 'ketika', 'saat'].includes(cleanW)) {
+                    if (currentText.length > 0) {
+                        result.push({ text: currentText.join(' '), tag: currentTag });
+                        currentText = [];
+                    }
+                    currentTag = 'K';
+                    currentText.push(tokens[i]);
+                    continue;
+                }
+
+                // Deteksi Predikat (Verba / Kata ganti bantu)
+                if (!hasP && currentTag === 'S' && (
+                    cleanW.startsWith('me') || cleanW.startsWith('ber') || cleanW.startsWith('di') || cleanW.startsWith('ter') || 
+                    ['sedang', 'akan', 'telah', 'sudah', 'adalah', 'merupakan', 'tidak', 'belum', 'ingin', 'mau'].includes(cleanW)
+                )) {
+                    // Pengecualian jika 'di' adalah preposisi yang berdiri sendiri, sudah ditangkap di blok K
+                    if (currentText.length > 0) {
+                        result.push({ text: currentText.join(' '), tag: currentTag });
+                        currentText = [];
+                    }
+                    currentTag = 'P';
+                    hasP = true;
+                    if(cleanW.startsWith('me')) pType = 'aktif';
+                    if(cleanW.startsWith('di') || cleanW.startsWith('ter')) pType = 'pasif';
+                    currentText.push(tokens[i]);
+                    continue;
+                }
+
+                // Transisi dari P ke O atau Pel
+                if (hasP && currentTag === 'P' && !['sedang', 'akan', 'telah', 'sudah', 'tidak', 'belum', 'sangat', 'paling'].includes(cleanW)) {
+                    // Cek kata sebelumnya untuk menentukan pergantian tag
+                    if (currentText.length > 0) {
+                        let lastWord = currentText[currentText.length - 1].toLowerCase().replace(/[^a-z0-9-]/g, '');
+                        if (lastWord.startsWith('me') || lastWord === 'adalah' || lastWord === 'merupakan') {
+                            result.push({ text: currentText.join(' '), tag: 'P' });
+                            currentText = [];
+                            currentTag = 'O'; // Biasanya aktif transitif diikuti Objek
+                        } else if (lastWord.startsWith('ber') || lastWord.startsWith('di') || lastWord.startsWith('ter')) {
+                            result.push({ text: currentText.join(' '), tag: 'P' });
+                            currentText = [];
+                            currentTag = 'Pel'; // Biasanya pasif / intransitif diikuti Pelengkap
+                        }
+                    }
+                }
+
+                currentText.push(tokens[i]);
+            }
+
+            if (currentText.length > 0) {
+                result.push({ text: currentText.join(' '), tag: currentTag });
+            }
+
+            // Yen kabeh mung P utawa K, atur sing pertama dadi S (fallback safety)
+            if(result.length > 0 && result[0].tag !== 'S' && !hasP) {
+                result[0].tag = 'S';
+            }
+
+            return result;
+        }
+
+        // Nganyari UI sakabehe
+        function renderAll() {
+            renderEditor();
+            renderVisualStructure();
+            renderAnalysisTable();
+            renderTheoryProofs();
+            updateSentenceCategory();
+        }
+
+        // Nampilake form editor frasa
+        function renderEditor() {
+            const container = document.getElementById('chunkEditorList');
+            container.innerHTML = '';
+
+            chunks.forEach((chunk, index) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center gap-2";
+                
+                div.innerHTML = `
+                    <select onchange="updateChunk(${index}, 'tag', this.value)" class="p-2 border border-slate-300 rounded-md font-bold text-sm bg-slate-50 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="S" ${chunk.tag === 'S' ? 'selected' : ''}>S</option>
+                        <option value="P" ${chunk.tag === 'P' ? 'selected' : ''}>P</option>
+                        <option value="O" ${chunk.tag === 'O' ? 'selected' : ''}>O</option>
+                        <option value="Pel" ${chunk.tag === 'Pel' ? 'selected' : ''}>Pel</option>
+                        <option value="K" ${chunk.tag === 'K' ? 'selected' : ''}>K</option>
+                    </select>
+                    <input type="text" oninput="updateChunk(${index}, 'text', this.value)" value="${chunk.text}" class="flex-grow p-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <button onclick="removeChunk(${index})" class="p-2 text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-md transition">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Nganyari data nalika pangguna ngganti nilai
+        function updateChunk(index, field, value) {
+            chunks[index][field] = value;
+            // Debounce sithik kanggo input teks ben ora lag
+            if(field === 'text') {
+                clearTimeout(window.updateTimer);
+                window.updateTimer = setTimeout(() => {
+                    renderVisualStructure();
+                    renderAnalysisTable();
+                    renderTheoryProofs();
+                    updateSentenceCategory();
+                }, 300);
+            } else {
+                renderVisualStructure();
+                renderAnalysisTable();
+                renderTheoryProofs();
+                updateSentenceCategory();
+            }
+        }
+
+        // Nambah frasa kosong anyar
+        function addEmptyChunk() {
+            chunks.push({ text: "Kata Baru", tag: "K" });
+            renderAll();
+        }
+
+        // Mbusak frasa
+        function removeChunk(index) {
+            chunks.splice(index, 1);
+            renderAll();
+        }
+
+        // Nampilake blok warna S-P-O-K
+        function renderVisualStructure() {
+            const container = document.getElementById('visualStructure');
+            container.innerHTML = '';
+            
+            const tagNames = { 'S': 'Subjek', 'P': 'Predikat', 'O': 'Objek', 'Pel': 'Pelengkap', 'K': 'Keterangan' };
+
+            chunks.forEach(chunk => {
+                const div = document.createElement('div');
+                div.className = `flex flex-col rounded-lg overflow-hidden border border-slate-200 shadow-sm min-w-[100px] flex-grow text-center`;
+                
+                div.innerHTML = `
+                    <div class="px-4 py-3 bg-white text-slate-800 font-medium text-sm flex-grow flex items-center justify-center break-words">
+                        ${chunk.text || '-'}
+                    </div>
+                    <div class="py-1.5 text-xs font-bold uppercase tracking-wider tag-${chunk.tag}">
+                        ${chunk.tag} - ${tagNames[chunk.tag]}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Nemtokake Kategori Ukara Adhedhasar Predikat
+        function updateSentenceCategory() {
+            const pChunk = chunks.find(c => c.tag === 'P');
+            const badge = document.getElementById('sentenceCategory');
+            
+            if(!pChunk || !pChunk.text) {
+                badge.textContent = "Kategori Tidak Diketahui (Predikat tidak ditemukan)";
+                badge.className = "px-3 py-1 bg-slate-100 text-slate-800 text-xs font-bold rounded-full";
+                return;
+            }
+
+            const pText = pChunk.text.toLowerCase();
+            let category = "Kalimat Nominal / Lainnya";
+            let color = "bg-slate-100 text-slate-800";
+
+            if (pText.match(/\b(me|ber|di|ter|sedang|akan|telah|sudah)\w*\b/)) {
+                if (pText.match(/\b(di|ter)\w*\b/) && !pText.match(/\b(sedang di|akan di)\w*\b/)) { // Sederhana
+                    category = "Kalimat Verbal Pasif";
+                } else if (chunks.some(c => c.tag === 'O')) {
+                    category = "Kalimat Verbal Aktif Transitif";
+                } else {
+                    category = "Kalimat Verbal Aktif Intransitif";
+                }
+                color = "bg-green-100 text-green-800";
+            } 
+            else if (pText.match(/\b(adalah|merupakan|ialah)\b/)) {
+                category = "Kalimat Nominal (Ekuatif)";
+                color = "bg-blue-100 text-blue-800";
+            }
+            else if (pText.match(/\b(sangat|paling|agak|cantik|besar|kecil|baik|buruk|tinggi|rendah|mahal|murah|pintar|bodoh)\b/)) {
+                category = "Kalimat Adjektival";
+                color = "bg-yellow-100 text-yellow-800";
+            }
+            else if (pText.match(/\b(di|ke|dari)\b/)) {
+                category = "Kalimat Preposisional";
+                color = "bg-purple-100 text-purple-800";
+            }
+
+            badge.textContent = category;
+            badge.className = `px-3 py-1 ${color} text-xs font-bold rounded-full`;
+        }
+
+        // Nebak kategori leksikal (Nomina, Verba, dll) saka frasa
+        function guessLexicalCategory(text, tag) {
+            text = text.toLowerCase();
+            if(tag === 'P') {
+                if(text.match(/\b(me|ber|di|ter)\w*\b/)) return "Frasa Verbal";
+                if(text.match(/\b(sangat|paling|cantik|besar|baik)\b/)) return "Frasa Adjektival";
+                return "Frasa Verbal / Nominal";
+            }
+            if(tag === 'S' || tag === 'O') {
+                if(text.match(/\b(bahwa|untuk)\b/)) return "Klausa Subordinatif";
+                return "Frasa Nominal (Pronomina/Nomina)";
+            }
+            if(tag === 'K') return "Frasa Preposisional / Adverbial";
+            return "Frasa Nominal / Adjektival";
+        }
+
+        // Logika kanggo peran semantis
+        function getSemanticRole(chunk, pChunk) {
+            const text = chunk.text.toLowerCase();
+            const tag = chunk.tag;
+            const pText = pChunk ? pChunk.text.toLowerCase() : '';
+
+            if (tag === 'S') {
+                if (pText.match(/\b(di|ter)\w*\b/)) return "Pasien / Objektif (Sasaran tindakan)";
+                if (pText.match(/\b(sangat|cantik|besar|marah|sedih|suka)\b/)) return "Pengalam (Experiencer)";
+                return "Agentif (Pelaku / Inisiator)";
+            }
+            if (tag === 'P') {
+                if (pText.match(/\b(adalah|merupakan|menjadi)\b/)) return "Proses / Identifikasi";
+                if (pText.match(/\b(cantik|besar|tinggi|baik)\b/)) return "Keadaan (State)";
+                return "Tindakan / Perbuatan / Proses";
+            }
+            if (tag === 'O') {
+                return "Pasien / Sasaran (Yang dikenai tindakan)";
+            }
+            if (tag === 'Pel') {
+                if (text.match(/\b(menjadi)\b/)) return "Hasil";
+                return "Atributif / Benefaktif / Pelengkap Penderita";
+            }
+            if (tag === 'K') {
+                if (text.match(/\b(di|ke|dari)\b/)) return "Lokatif (Tempat / Arah)";
+                if (text.match(/\b(pada|besok|kemarin|jam|waktu|saat|ketika|sejak)\b/)) return "Temporal (Waktu)";
+                if (text.match(/\b(dengan|menggunakan|secara)\b/)) return "Instrumental (Alat) / Komitatif (Penyerta) / Cara";
+                if (text.match(/\b(karena|sebab|lantaran)\b/)) return "Kausalitas (Penyebab)";
+                if (text.match(/\b(untuk|bagi|demi)\b/)) return "Benefaktif (Peruntukan) / Tujuan";
+                if (text.match(/\b(oleh)\b/)) return "Agentif (Pelaku pada kalimat pasif)";
+                return "Keterangan Situasi/Lainnya";
+            }
+            return "-";
+        }
+
+        // Nampilake tabel analisis Kategori lan Peran
+        function renderAnalysisTable() {
+            const tbody = document.getElementById('analysisTableBody');
+            tbody.innerHTML = '';
+            
+            const pChunk = chunks.find(c => c.tag === 'P');
+
+            chunks.forEach(chunk => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">${chunk.text || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full tag-${chunk.tag}">
+                            ${chunk.tag}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">${guessLexicalCategory(chunk.text, chunk.tag)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-800 font-medium">${getSemanticRole(chunk, pChunk)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Nggawe teks pambuktian teori adhedhasar fungsi sing diplilih
+        function renderTheoryProofs() {
+            const container = document.getElementById('theoryProofs');
+            container.innerHTML = '';
+
+            const theoryTemplate = {
+                'S': (text) => `<p><strong>Subjek (S) - <em>"${text}"</em>:</strong> Merupakan konstituen pokok yang menandai apa yang dibicarakan. Secara teoretis, Subjek dapat dibuktikan dengan pertanyaan <em>"Apa"</em> atau <em>"Siapa"</em> yang melakukan/mengalami Predikat. Selain itu, Subjek umumnya mendahului Predikat dalam struktur kalimat netral (non-inversi).</p>`,
+                
+                'P': (text) => `<p><strong>Predikat (P) - <em>"${text}"</em>:</strong> Merupakan pusat/inti klausa yang menerangkan keadaan atau tindakan Subjek. Bukti teoretisnya adalah kemampuannya untuk dinegasikan (diingkarkan) menggunakan partikel <em>"tidak"</em> (jika verba/adjektiva) atau <em>"bukan"</em> (jika nomina), serta kemampuannya didahului oleh pewatas aspek seperti <em>"sedang", "akan",</em> atau <em>"telah"</em>.</p>`,
+                
+                'O': (text) => `<p><strong>Objek (O) - <em>"${text}"</em>:</strong> Kehadirannya bersifat wajib karena dituntut oleh Predikat yang bervalensi transitif (umumnya berawalan <em>me-</em>). Pembuktian utama Objek dalam tata bahasa Indonesia adalah <strong>kemampuannya beralih fungsi menjadi Subjek</strong> apabila kalimat ditransformasi menjadi bentuk pasif (Predikat diubah menjadi <em>di-</em> atau <em>ter-</em>).</p>`,
+                
+                'Pel': (text) => `<p><strong>Pelengkap (Pel) - <em>"${text}"</em>:</strong> Merupakan konstituen yang melengkapi Predikat (intransitif, pasif, atau transitif dwi-objek). Perbedaan teoretis utamanya dengan Objek adalah: <strong>Pelengkap tidak dapat dipasifkan</strong> (tidak bisa menjadi Subjek dalam kalimat pasif). Posisinya selalu terikat tepat di belakang Predikat (atau tepat di belakang Objek jika ada).</p>`,
+                
+                'K': (text) => `<p><strong>Keterangan (K) - <em>"${text}"</em>:</strong> Merupakan unsur periferal (tambahan). Bukti teoretis yang paling kuat untuk Keterangan adalah <strong>sifatnya yang manasuka (opsional) dan mudah dipindah-pindah posisinya</strong> (mobile). Konstituen ini dapat dipindah ke awal, tengah, atau akhir kalimat tanpa merusak kegramatikalan dasar klausa (S-P).</p>`
+            };
+
+            const presentTags = new Set();
+
+            chunks.forEach(chunk => {
+                if(chunk.text && !presentTags.has(chunk.tag)) {
+                    presentTags.add(chunk.tag);
+                    const div = document.createElement('div');
+                    div.className = "bg-slate-50 p-4 rounded-lg border-l-4 border-slate-300 text-sm text-slate-700";
+                    // Ngatur werna border adhedhasar tag
+                    if(chunk.tag === 'S') div.classList.replace('border-slate-300', 'border-blue-500');
+                    if(chunk.tag === 'P') div.classList.replace('border-slate-300', 'border-red-500');
+                    if(chunk.tag === 'O') div.classList.replace('border-slate-300', 'border-green-500');
+                    if(chunk.tag === 'Pel') div.classList.replace('border-slate-300', 'border-yellow-500');
+                    if(chunk.tag === 'K') div.classList.replace('border-slate-300', 'border-purple-500');
+                    
+                    div.innerHTML = theoryTemplate[chunk.tag](chunk.text);
+                    container.appendChild(div);
+                }
+            });
+
+            if(chunks.length === 0) {
+                container.innerHTML = '<p class="text-sm text-slate-500 italic">Lakukan analisis untuk melihat pembuktian teori.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
