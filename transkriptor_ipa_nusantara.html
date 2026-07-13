@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transkripsi Fonetis Bahasa Daerah - Lab Sastrabudi UBT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0fdf4; /* Light green background representing nature/Borneo */
+            background-image: radial-gradient(#dcfce7 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            z-index: 0;
+            animation: pulse 1.5s infinite;
+            display: none;
+        }
+
+        .is-recording .pulse-ring {
+            display: block;
+            background-color: rgba(239, 68, 68, 0.4);
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+
+        .ipa-font {
+            font-family: "Charis SIL", "Doulos SIL", "Times New Roman", serif;
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-gray-800">
+
+    <!-- Header / Branding -->
+    <header class="bg-green-800 text-white shadow-md">
+        <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <!-- Academic Icon -->
+                <div class="bg-white text-green-800 p-3 rounded-full">
+                    <i class="fas fa-map-marked-alt text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight text-center md:text-left">Lab Sastrabudi</h1>
+                    <p class="text-green-100 text-sm md:text-base font-medium text-center md:text-left">Program Studi Pendidikan Bahasa Indonesia</p>
+                    <p class="text-green-200 text-xs md:text-sm text-center md:text-left">Universitas Borneo Tarakan (UBT)</p>
+                </div>
+            </div>
+            <div class="mt-4 md:mt-0 text-center md:text-right">
+                <span class="inline-block px-3 py-1 bg-green-700 rounded-full text-xs font-semibold tracking-wider uppercase border border-green-600 mb-1">
+                    Fokus: Kalimantan & Sulawesi
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-5xl mx-auto px-4 py-8 w-full flex flex-col gap-6">
+        
+        <!-- Info Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-green-100 p-5">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2"><i class="fas fa-info-circle text-blue-500 mr-2"></i>Panduan Perekaman Bahasa Daerah</h2>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                Pilih bahasa daerah target di bawah ini. Aplikasi menggunakan mesin pengenalan suara serumpun dengan penyesuaian algoritma IPA otomatis untuk menangkap ciri khas daerah (seperti hentian glotal <strong>[ʔ]</strong> pada tanda petik tunggal atau konsonan geminasi <strong>[ː]</strong> di bahasa Sulawesi). Karena logat sangat variatif, pastikan Anda <strong>mengedit kembali teks ortografis atau hasil IPA</strong> jika sistem menangkap kata serumpun yang kurang tepat.
+            </p>
+        </div>
+
+        <!-- Recording Interface -->
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 md:p-8 flex flex-col items-center">
+            
+            <!-- Language Selector -->
+            <div class="w-full max-w-sm mb-6">
+                <label for="langSelect" class="block text-sm font-medium text-gray-700 text-center mb-2"><i class="fas fa-language text-blue-500 mr-1"></i> Rumpun Bahasa Daerah</label>
+                <select id="langSelect" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md bg-green-50 border border-green-200 text-green-900 font-medium shadow-sm">
+                    <optgroup label="Kalimantan (Borneo)">
+                        <option value="id-ID-tidung">Bahasa Tidung / Bulungan (KalTara)</option>
+                        <option value="id-ID-banjar">Bahasa Banjar (KalSel/KalTim)</option>
+                        <option value="id-ID-dayak">Bahasa Dayak (Ngaju/Ma'anyan/Kenyah)</option>
+                        <option value="id-ID-kutai">Bahasa Kutai (KalTim)</option>
+                    </optgroup>
+                    <optgroup label="Sulawesi (Celebes)">
+                        <option value="id-ID-bugis">Bahasa Bugis (SulSel)</option>
+                        <option value="id-ID-makassar">Bahasa Makassar (SulSel)</option>
+                        <option value="id-ID-toraja">Bahasa Toraja (SulSel)</option>
+                        <option value="id-ID-minahasa">Bahasa Minahasa/Manado (SulUt)</option>
+                        <option value="id-ID-kaili">Bahasa Kaili (Sulteng)</option>
+                    </optgroup>
+                    <optgroup label="Standar">
+                        <option value="id-ID">Bahasa Indonesia Standar</option>
+                        <option value="ms-MY">Bahasa Melayu</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="relative mb-6">
+                <div class="pulse-ring" id="pulseRing"></div>
+                <button id="micBtn" class="relative z-10 w-20 h-20 bg-green-600 hover:bg-green-700 text-white rounded-full flex items-center justify-center text-3xl shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300">
+                    <i class="fas fa-microphone" id="micIcon"></i>
+                </button>
+            </div>
+            
+            <p id="statusText" class="text-gray-500 font-medium mb-8">Siap merekam. Tekan mikrofon.</p>
+
+            <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Text Output -->
+                <div class="flex flex-col">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="font-semibold text-gray-700"><i class="fas fa-align-left text-green-600 mr-2"></i>Teks Asli (Ortografis)</label>
+                        <button onclick="copyText('transcriptText')" class="text-xs text-gray-500 hover:text-green-600 transition"><i class="fas fa-copy mr-1"></i>Salin</button>
+                    </div>
+                    <textarea id="transcriptText" rows="6" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none bg-gray-50 text-gray-700" placeholder="Hasil suara akan muncul di sini. Anda dapat mengetik manual tanda petik (') untuk bunyi glotal..."></textarea>
+                </div>
+
+                <!-- IPA Output -->
+                <div class="flex flex-col">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="font-semibold text-gray-700"><i class="fas fa-headphones text-blue-600 mr-2"></i>Transkripsi Fonetis (IPA)</label>
+                        <button onclick="copyText('ipaText')" class="text-xs text-gray-500 hover:text-blue-600 transition"><i class="fas fa-copy mr-1"></i>Salin</button>
+                    </div>
+                    <textarea id="ipaText" rows="6" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none bg-blue-50 text-gray-800 ipa-font" placeholder="[ h a s i l  i p a  a k a n  m u n c u l  d i  s i n i ]"></textarea>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-6 flex space-x-4 w-full md:w-auto">
+                <button id="clearBtn" class="flex-1 md:flex-none px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition duration-200">
+                    <i class="fas fa-trash-alt mr-2"></i>Bersihkan
+                </button>
+                <button id="downloadBtn" class="flex-1 md:flex-none px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition duration-200 shadow-sm">
+                    <i class="fas fa-download mr-2"></i>Simpan Data (.txt)
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-6 text-center text-sm mt-auto">
+        <p>&copy; 2026 Laboratorium Sastrabudi</p>
+        <p>Program Studi Pendidikan Bahasa Indonesia - Universitas Borneo Tarakan</p>
+        <p class="text-xs mt-2">Dibuat untuk keperluan praktikum dialektologi dan dokumentasi bahasa daerah.</p>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg transform transition-transform duration-300 translate-y-20 opacity-0 z-50">
+        <span id="toastMsg">Notifikasi</span>
+    </div>
+
+    <script>
+        // DOM Elements
+        const micBtn = document.getElementById('micBtn');
+        const micIcon = document.getElementById('micIcon');
+        const pulseRing = document.getElementById('pulseRing');
+        const statusText = document.getElementById('statusText');
+        const transcriptTextArea = document.getElementById('transcriptText');
+        const ipaTextArea = document.getElementById('ipaText');
+        const clearBtn = document.getElementById('clearBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const langSelect = document.getElementById('langSelect');
+
+        // Speech Recognition Setup
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isRecording = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            // Ekstrak tag bahasa standar untuk mesin Speech API (misal: "id-ID-bugis" menjadi "id-ID")
+            recognition.lang = langSelect.value.substring(0, 5);
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = function() {
+                isRecording = true;
+                micBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                micBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+                micIcon.classList.remove('fa-microphone');
+                micIcon.classList.add('fa-stop');
+                pulseRing.parentElement.classList.add('is-recording');
+                statusText.innerHTML = '<span class="text-red-500 font-bold"><i class="fas fa-circle text-xs mr-2 animate-pulse"></i>Merekam logat daerah...</span>';
+            };
+
+            recognition.onresult = function(event) {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                if (finalTranscript !== '') {
+                    const currentText = transcriptTextArea.value;
+                    const newText = currentText + (currentText.length > 0 ? ' ' : '') + finalTranscript;
+                    transcriptTextArea.value = newText;
+                    
+                    // Convert to IPA
+                    ipaTextArea.value = convertToIPA(newText);
+                }
+            };
+
+            recognition.onerror = function(event) {
+                console.error("Speech recognition error", event.error);
+                stopRecording();
+                statusText.innerText = "Terjadi kesalahan. Silakan coba lagi.";
+                showToast("Kesalahan mikrofon: " + event.error);
+            };
+
+            recognition.onend = function() {
+                if (isRecording) {
+                    try {
+                        recognition.start();
+                    } catch(e) {
+                        stopRecording();
+                    }
+                } else {
+                    stopRecording();
+                }
+            };
+
+        } else {
+            statusText.innerHTML = "<span class=\"text-red-500\">Browser Anda tidak mendukung fitur perekaman suara. Gunakan browser berbasis Chromium (Chrome/Edge).</span>";
+            micBtn.disabled = true;
+            micBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        // Action Handlers
+        langSelect.addEventListener('change', () => {
+            if (recognition) {
+                // Selalu setel ke id-ID atau ms-MY untuk model akustiknya
+                recognition.lang = langSelect.value.substring(0, 5);
+                if (isRecording) {
+                    recognition.stop();
+                    setTimeout(() => recognition.start(), 300);
+                }
+            }
+            // Retranslate IPA based on new dialect selection
+            ipaTextArea.value = convertToIPA(transcriptTextArea.value);
+        });
+
+        micBtn.addEventListener('click', async () => {
+            if (!navigator.onLine) {
+                showToast("Koneksi internet diperlukan untuk pengenalan suara.");
+                return;
+            }
+
+            if (isRecording) {
+                isRecording = false;
+                recognition.stop();
+                stopRecording();
+            } else {
+                try {
+                    await navigator.mediaDevices.getUserMedia({ audio: true });
+                    recognition.lang = langSelect.value.substring(0, 5);
+                    recognition.start();
+                } catch(e) {
+                    console.error("Mic error:", e);
+                    if (e.name === 'NotAllowedError') {
+                        showToast("Izin mikrofon diblokir. Izinkan akses di pengaturan browser.");
+                        statusText.innerHTML = '<span class="text-red-500">Izin mikrofon ditolak.</span>';
+                    } else if (e.name === 'InvalidStateError') {
+                        console.log("Recognition is already running.");
+                    } else {
+                        showToast("Error saat memulai mikrofon.");
+                    }
+                    stopRecording();
+                }
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            transcriptTextArea.value = '';
+            ipaTextArea.value = '';
+            showToast("Teks dibersihkan");
+        });
+
+        transcriptTextArea.addEventListener('input', () => {
+            ipaTextArea.value = convertToIPA(transcriptTextArea.value);
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const original = transcriptTextArea.value;
+            const ipa = ipaTextArea.value;
+            const langName = langSelect.options[langSelect.selectedIndex].text;
+            
+            if(!original && !ipa) {
+                showToast("Tidak ada data untuk disimpan");
+                return;
+            }
+
+            const content = `DATA DOKUMENTASI BAHASA DAERAH\nLab Sastrabudi Prodi Pend. Bahasa Indonesia, UBT\nTanggal: ${new Date().toLocaleString('id-ID')}\nBahasa Target: ${langName}\n\n[TEKS ORTOGRAFIS]\n${original}\n\n[TRANSKRIPSI IPA]\n${ipa}\n`;
+            
+            const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Transkripsi_Bahasa_${langSelect.value}_${new Date().getTime()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Data berhasil diunduh!");
+        });
+
+        function stopRecording() {
+            isRecording = false;
+            micBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+            micBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            micIcon.classList.add('fa-microphone');
+            micIcon.classList.remove('fa-stop');
+            pulseRing.parentElement.classList.remove('is-recording');
+            statusText.innerText = "Perekaman dihentikan. Siap merekam kembali.";
+        }
+
+        function copyText(elementId) {
+            const el = document.getElementById(elementId);
+            if(el.value.trim() === '') {
+                showToast("Tidak ada teks untuk disalin");
+                return;
+            }
+            el.select();
+            el.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            showToast("Disalin ke papan klip!");
+            window.getSelection().removeAllRanges();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        /**
+         * Algoritma Konversi Teks ke IPA (Regional Kalimantan & Sulawesi)
+         */
+        function convertToIPA(text) {
+            if (!text) return "";
+            
+            let ipa = text.toLowerCase();
+            const dialect = langSelect.value;
+
+            // 1. Tangani tanda petik tunggal/koma atas sebagai Glottal Stop [ʔ] sebelum dihapus
+            // Sangat umum di Dayak, Bugis, Makassar
+            ipa = ipa.replace(/['`]/g, 'ʔ');
+
+            // Membersihkan tanda baca selain hentian glotal
+            ipa = ipa.replace(/[.,/#!$%^&*;:{}=\-_~()?"']/g, " ");
+
+            // 2. Deteksi Geminasi (Konsonan Ganda) - Khas Sulawesi (Bugis/Makassar)
+            // Contoh: bessi -> b e s ː i
+            ipa = ipa.replace(/([bcdfghjklmnpqrstvwxyz])\1/g, '$1ː');
+
+            // 3. Konversi Diftong umum Austronesia
+            ipa = ipa.replace(/ai/g, 'ai̯');
+            ipa = ipa.replace(/au/g, 'au̯');
+            ipa = ipa.replace(/oi/g, 'oi̯');
+
+            // 4. Aturan Awalan 'e' pepet (Hanya ditekankan jika memilih Standar/Melayu/Tidung/Banjar)
+            // Di beberapa bahasa seperti Bugis, 'e' sering dibaca taling, jadi aturan ini dilewati
+            if (!dialect.includes('bugis') && !dialect.includes('makassar')) {
+                ipa = ipa.replace(/\bme(?=[a-z])/g, 'mə');
+                ipa = ipa.replace(/\bpe(?=[a-z])/g, 'pə');
+                ipa = ipa.replace(/\bber(?=[a-z])/g, 'bər');
+                ipa = ipa.replace(/\bter(?=[a-z])/g, 'tər');
+                ipa = ipa.replace(/\bke(?=[a-z])/g, 'kə');
+                ipa = ipa.replace(/\bse(?=[a-z])/g, 'sə');
+            }
+
+            // 5. Konversi Digraf Konsonan
+            ipa = ipa.replace(/ng/g, 'ŋ');
+            ipa = ipa.replace(/ny/g, 'ɲ');
+            ipa = ipa.replace(/sy/g, 'ʃ');
+            ipa = ipa.replace(/ch/g, 'tʃ');
+            ipa = ipa.replace(/kh/g, 'x');
+            ipa = ipa.replace(/gh/g, 'ɣ');
+
+            // 6. Konversi Huruf Tunggal
+            ipa = ipa.replace(/c/g, 'tʃ');
+            ipa = ipa.replace(/j/g, 'dʒ');
+            ipa = ipa.replace(/y/g, 'j');
+            ipa = ipa.replace(/q/g, 'k');
+
+            // Merapikan spasi yang berlebih
+            ipa = ipa.replace(/\s+/g, ' ').trim();
+
+            if (ipa.length > 0) {
+                return `[ ${ipa} ]`;
+            }
+            return "";
+        }
+    </script>
+</body>
+</html>
