@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linguistik Forensik - Lab Sastrabudi UBT</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts for premium look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-mono-custom {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom scrollbar for premium touch */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+    <!-- DOWNLOAD MODAL OVERLAY (CUSTOM ALERT/NOTIFICATION) -->
+    <div id="download-modal" class="fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-[9999] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl border border-slate-100 text-center space-y-5">
+            <div class="mx-auto w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center animate-bounce">
+                <!-- SVG FileText Icon -->
+                <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <div class="space-y-1">
+                <h3 class="font-extrabold text-lg text-slate-900">Menyiapkan Berkas Luring</h3>
+                <p class="text-xs text-slate-500">Mengekstrak data pembelajaran lengkap dari berkas asli <strong class="font-semibold text-slate-700">"MODUL LINGUISTIK FORENSIK.pdf"</strong></p>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div id="download-progress-bar" class="bg-emerald-600 h-full w-0 transition-all duration-150 ease-out"></div>
+            </div>
+            <p class="text-xs font-mono-custom text-emerald-600 font-bold"><span id="download-percentage">0</span>% Selesai</p>
+        </div>
+    </div>
+
+    <!-- HEADER NAVIGATION -->
+    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
+            
+            <!-- Branding -->
+            <div class="flex items-center gap-3">
+              <div class="bg-emerald-600 p-2.5 rounded-xl shadow-md shadow-emerald-500/20">
+                <!-- SVG Library Icon -->
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
+              </div>
+              <div>
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-white flex items-center gap-2">
+                  Lab Sastrabudi
+                  <span class="text-xs bg-emerald-500/20 text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-500/30">
+                    Ebook HTML v3.0
+                  </span>
+                </h1>
+                <p class="text-xs text-slate-400 font-medium">Prodi Pendidikan Bahasa Indonesia | Universitas Borneo Tarakan</p>
+              </div>
+            </div>
+
+            <!-- Navigation and Download -->
+            <div class="flex flex-wrap items-center justify-center gap-3">
+              <nav class="flex flex-wrap justify-center gap-1.5 sm:gap-2">
+                <button onclick="switchTab('beranda')" id="nav-beranda" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-emerald-600 text-white shadow-lg shadow-emerald-600/35">
+                  Beranda
+                </button>
+                <button onclick="switchTab('reader')" id="nav-reader" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white">
+                  Ebook Reader
+                </button>
+                <button onclick="switchTab('kasus')" id="nav-kasus" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white">
+                  Simulasi Kasus
+                </button>
+                <button onclick="switchTab('glosarium')" id="nav-glosarium" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white">
+                  Glosarium
+                </button>
+              </nav>
+
+              <button
+                onclick="triggerOfflineDownload()"
+                class="flex items-center gap-1.5 px-3.5 py-2 text-xs font-extrabold bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg transition-all shadow-md shadow-amber-500/25 hover:scale-105"
+                title="Unduh Berkas Lengkap MODUL LINGUISTIK FORENSIK.pdf"
+              >
+                <!-- SVG Download Icon -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Unduh PDF
+              </button>
+            </div>
+          </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT MODULES -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- SECTION 1: BERANDA -->
+        <section id="view-beranda" class="space-y-12 animate-fade">
+            <!-- Hero Card -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col lg:flex-row border border-slate-200">
+                <div class="bg-slate-900 lg:w-2/5 p-8 lg:p-12 flex flex-col justify-between text-white relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mr-16 -mt-16 opacity-10">
+                        <!-- SVG Fingerprint Pattern -->
+                        <svg class="w-80 h-80" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1c-5.11 0-9 3.27-9 8.4 0 .55.45 1 1 1s1-.45 1-1c0-4 2.87-6.4 7-6.4s7 2.4 7 6.4c0 .55.45 1 1 1s1-.45 1-1C21 4.27 17.11 1 12 1zm0 4c-2.97 0-5 1.83-5 5.4 0 .55.45 1 1 1s1-.45 1-1c0-2.4 1-3.4 3-3.4s3 1 3 3.4c0 3.12-1.74 5-3.55 6.83l-.71.72C8.75 18.94 8 19.93 8 21.4c0 .55.45 1 1 1s1-.45 1-1c0-.49.27-.92 1.1-1.73l.63-.64c1.92-1.95 4.27-4.32 4.27-8.63C17 6.83 14.97 5 12 5zm0 4c-.9 0-1.5.58-1.5 1.9 0 1.25.75 2 1.5 3 .75-1 1.5-1.75 1.5-3 0-1.32-.6-1.9-1.5-1.9z"></path></svg>
+                    </div>
+                    <div class="relative z-10 space-y-6">
+                        <span class="inline-block py-1 px-3 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold tracking-wider border border-emerald-500/30">
+                            LAB SASTRABUDI UBT
+                        </span>
+                        <div class="space-y-2">
+                            <h2 class="text-3xl lg:text-5xl font-extrabold leading-tight">
+                                Linguistik <br/><span class="text-emerald-400">Forensik</span>
+                            </h2>
+                            <p class="text-slate-400 text-sm">
+                                Berbasis Studi Kasus & Team-Based Project
+                            </p>
+                        </div>
+                    </div>
+                    <div class="relative z-10 pt-12">
+                        <div class="flex items-center gap-3 bg-slate-800/60 p-4 rounded-xl border border-slate-700/50">
+                            <!-- SVG Award Icon -->
+                            <svg class="w-5 h-5 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            <p class="text-xs text-slate-300">
+                                Materi Lengkap 14 Bab Buku Ajar Sesuai Berkas <span class="text-emerald-300 font-mono-custom">MODUL LINGUISTIK FORENSIK.pdf</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:w-3/5 p-8 lg:p-12 flex flex-col justify-center space-y-6">
+                    <h3 class="text-2xl lg:text-3xl font-bold text-slate-800 leading-tight">
+                        Ebook Reader Interaktif & Portal Pembelajaran Digital
+                    </h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        Selamat datang di media ajar digital Program Studi Pendidikan Bahasa Indonesia Universitas Borneo Tarakan. 
+                        Aplikasi ini mendigitalkan seluruh dokumen ajar <strong>Modul Linguistik Forensik</strong> menjadi pembaca interaktif 
+                        yang responsif, ramah seluler, serta dilengkapi fitur simulasi lab siber untuk menunjang pengerjaan 
+                        <em>Team-Based Project</em> mahasiswa FKIP UBT.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <button onclick="openReaderToModule(0)" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-emerald-500/30 hover:scale-105">
+                            Mulai Membaca Modul
+                            <!-- SVG Chevron Right -->
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                        <button onclick="triggerOfflineDownload()" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 px-6 py-3 rounded-xl font-bold transition-all hover:scale-105 shadow-lg shadow-amber-500/20">
+                            <!-- SVG Download Document -->
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
+                            Unduh PDF Modul
+                        </button>
+                        <button onclick="switchTab('kasus')" class="flex items-center gap-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-6 py-3 rounded-xl font-bold transition-all hover:border-slate-400">
+                            Simulasi Kasus Hukum
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Access Grid -->
+            <div class="space-y-6">
+                <h3 class="text-xl font-extrabold text-slate-900 border-b border-slate-200 pb-3 flex items-center gap-2">
+                    <!-- SVG BookOpen Icon -->
+                    <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    Kajian Utama Linguistik Forensik
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="topics-grid">
+                    <!-- Dynamic rendering by JS -->
+                </div>
+            </div>
+
+            <!-- Author Profile -->
+            <div class="bg-slate-100 rounded-2xl p-6 lg:p-8 flex flex-col md:flex-row items-center gap-6 border border-slate-200">
+                <div class="bg-emerald-600 rounded-full w-20 h-20 flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-600/20 text-white">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </div>
+                <div class="text-center md:text-left space-y-1.5">
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Penulis Utama Buku Ajar</h4>
+                    <h3 className="text-2xl font-bold text-slate-800">Dr. Dwi Cahyono Aji, S.S., M.A.</h3>
+                    <p class="text-slate-600 text-sm max-w-2xl leading-relaxed">
+                        Dosen Program Studi Pendidikan Bahasa Indonesia, Universitas Borneo Tarakan. Spesialis kajian interdisipliner bahasa, peradilan siber, dan analisis profil kebahasaan forensik di wilayah Kalimantan Utara.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: EBOOK READER -->
+        <section id="view-reader" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-8 animate-fade">
+            
+            <!-- LEFT: Sidebar Navigation & Utilities -->
+            <div class="lg:col-span-1 space-y-6">
+                
+                <!-- Offline Download Card -->
+                <div class="bg-gradient-to-br from-amber-500 to-amber-600 p-4 rounded-xl text-slate-950 shadow-md space-y-3">
+                    <div class="flex gap-2 items-start">
+                        <!-- SVG FileText Icon -->
+                        <svg class="w-5 h-5 flex-shrink-0 mt-0.5 text-slate-950" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <div>
+                            <h4 class="font-extrabold text-xs uppercase tracking-wider">Unduh Berkas Luring</h4>
+                            <p class="text-[11px] leading-relaxed opacity-95">Unduh berkas ringkasan dari dokumen <strong class="font-semibold text-slate-700">"MODUL LINGUISTIK FORENSIK.pdf"</strong> untuk dibaca tanpa jaringan.</p>
+                        </div>
+                    </div>
+                    <button onclick="triggerOfflineDownload()" class="w-full py-2 bg-slate-950 text-white font-extrabold rounded-lg text-xs hover:bg-slate-800 transition-all shadow-sm hover:scale-[1.02]">
+                        Mulai Unduh Modul
+                    </button>
+                </div>
+
+                <!-- Search Panel -->
+                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                    <label class="text-xs font-bold uppercase text-slate-500 tracking-wider">Cari di Dalam Modul</label>
+                    <div class="relative">
+                        <!-- SVG Search Icon -->
+                        <svg class="absolute left-3 top-2.5 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input 
+                            type="text" 
+                            id="reader-search-input"
+                            oninput="handleReaderSearch()"
+                            placeholder="Ketik kata kunci..."
+                            class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                    </div>
+                    <!-- Search Results Area -->
+                    <div id="reader-search-results" class="hidden space-y-2 max-h-48 overflow-y-auto pt-2 border-t border-slate-100">
+                    </div>
+                </div>
+
+                <!-- Sidebar Chapter List -->
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                    <label class="text-xs font-bold uppercase text-slate-500 tracking-wider block border-b border-slate-100 pb-2">
+                        Daftar Isi Modul (14 Bab)
+                    </label>
+                    <div id="chapter-list-container" class="space-y-1.5 max-h-[400px] overflow-y-auto pr-1">
+                        <!-- Dynamic rendered list of chapters -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT: Document Reader Panel -->
+            <div class="lg:col-span-3 space-y-4">
+                
+                <!-- Reader Control Bar -->
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap gap-4 justify-between items-center">
+                    
+                    <!-- Controls - Size and voice -->
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Ukuran Teks:</span>
+                        <div class="bg-slate-100 p-0.5 rounded-lg flex gap-1">
+                            <button onclick="changeFontSize('text-sm')" id="btn-font-sm" class="px-2.5 py-1 text-xs rounded-md font-bold transition-all text-slate-500 hover:text-slate-900">A-</button>
+                            <button onclick="changeFontSize('text-base')" id="btn-font-base" class="px-2.5 py-1 text-xs rounded-md font-bold transition-all bg-white shadow-sm text-slate-900">A</button>
+                            <button onclick="changeFontSize('text-lg')" id="btn-font-lg" class="px-2.5 py-1 text-xs rounded-md font-bold transition-all text-slate-500 hover:text-slate-900">A+</button>
+                            <button onclick="changeFontSize('text-xl')" id="btn-font-xl" class="px-2.5 py-1 text-xs rounded-md font-bold transition-all text-slate-500 hover:text-slate-900">A++</button>
+                        </div>
+                    </div>
+
+                    <!-- TTS & Bookmark Controls -->
+                    <div class="flex items-center gap-2">
+                        
+                        <!-- TTS Button -->
+                        <button
+                            id="btn-tts"
+                            onclick="handleTTSPlay()"
+                            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all border bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                            title="Aktifkan Text-to-Speech bahasa Indonesia"
+                        >
+                            <span id="tts-icon">
+                                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                            </span>
+                            <span id="tts-label">Bacakan Bab Ini</span>
+                        </button>
+
+                        <!-- Bookmark Button -->
+                        <button
+                            id="btn-bookmark"
+                            onclick="toggleBookmarkCurrent()"
+                            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all border bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                        >
+                            <svg id="bookmark-svg" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                            <span id="bookmark-label">Simpan Bab</span>
+                        </button>
+
+                    </div>
+                </div>
+
+                <!-- Reader Document view -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-md p-6 lg:p-10 space-y-6 min-h-[500px] relative">
+                    
+                    <!-- Header Module details -->
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-slate-100 pb-5">
+                        <div>
+                            <span id="reader-category" class="text-xs font-extrabold text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2.5 py-1 rounded-md">
+                                Konsep Dasar
+                            </span>
+                            <h2 id="reader-title" class="text-2xl font-extrabold text-slate-900 mt-2">Memuat Modul...</h2>
+                        </div>
+                        <div class="text-xs text-slate-400 font-mono-custom">
+                            Halaman asli PDF: <span id="reader-pages" class="font-bold text-slate-600">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Module Content -->
+                    <div id="reader-content" class="prose max-w-none text-slate-700 leading-relaxed space-y-4 text-base">
+                        <!-- Content injected via JS -->
+                    </div>
+
+                    <!-- Bottom Pagination Controls -->
+                    <div class="flex items-center justify-between border-t border-slate-100 pt-6 mt-8">
+                        <button
+                            id="btn-prev-chapter"
+                            onclick="navigateChapter(-1)"
+                            class="flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-700 disabled:opacity-40 transition-all"
+                        >
+                            <!-- SVG ArrowLeft -->
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+                            Sebelumnya
+                        </button>
+
+                        <span id="reader-pagination-label" class="text-xs font-bold text-slate-500">
+                            Bab -- dari --
+                        </span>
+
+                        <button
+                            id="btn-next-chapter"
+                            onclick="navigateChapter(1)"
+                            class="flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-700 disabled:opacity-40 transition-all"
+                        >
+                            Selanjutnya
+                            <!-- SVG ArrowRight -->
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: SIMULASI KASUS -->
+        <section id="view-kasus" class="hidden space-y-8 animate-fade">
+            <div class="mb-2 border-b border-slate-200 pb-4">
+                <h2 class="text-3xl font-extrabold text-slate-900">Lab Siber Linguistik Forensik</h2>
+                <p class="text-slate-500 mt-2">Simulasi interaktif pengerjaan <strong>Team-Based Project</strong> mahasiswa dengan pisau analisis forensik.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Case List Sidebar -->
+                <div class="space-y-3">
+                    <label class="text-xs font-bold uppercase text-slate-500 tracking-wider block">Pilih Barang Bukti</label>
+                    <div id="cases-sidebar-container" class="space-y-2">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- Evidence Dashboard -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                        
+                        <!-- Visual Text Evidence card -->
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold text-slate-400 block uppercase">Barang Bukti Transkrip / Screenshot:</span>
+                            <div class="bg-emerald-950 p-6 rounded-xl border border-emerald-900 relative">
+                                <div class="absolute top-2 right-2 flex gap-1.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                </div>
+                                <p id="case-evidence-text" class="font-mono-custom text-emerald-300 text-sm italic leading-relaxed">
+                                    "Memuat bukti..."
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Analysis triggers -->
+                        <div class="flex flex-wrap gap-3">
+                            <button
+                                onclick="runAnalysis('semantik')"
+                                id="btn-analysis-semantik"
+                                class="px-4 py-2.5 rounded-xl text-xs font-extrabold border transition-all bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                            >
+                                Uji Semantik Leksikal
+                            </button>
+                            <button
+                                onclick="runAnalysis('pragmatik')"
+                                id="btn-analysis-pragmatik"
+                                class="px-4 py-2.5 rounded-xl text-xs font-extrabold border transition-all bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                            >
+                                Uji Pragmatik (Tindak Tutur)
+                            </button>
+                            <button
+                                onclick="runAnalysis('stilometri')"
+                                id="btn-analysis-stilometri"
+                                class="px-4 py-2.5 rounded-xl text-xs font-extrabold border transition-all bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                            >
+                                Uji Stilometri (Idiolek)
+                            </button>
+                        </div>
+
+                        <!-- Analysis Output display -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 min-h-[140px] flex flex-col justify-center">
+                            <div id="analysis-output-container" class="space-y-2">
+                                <div class="text-center text-slate-400 space-y-1.5 py-4">
+                                    <!-- SVG HelpCircle -->
+                                    <svg class="w-8 h-8 mx-auto text-slate-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <p class="text-xs font-semibold">Silakan klik salah satu jenis metode pengujian di atas untuk melihat pembongkaran unsur bukti hukum.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 4: GLOSARIUM -->
+        <section id="view-glosarium" class="hidden space-y-6 animate-fade">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-slate-900">Kamus Glosarium</h2>
+                    <p class="text-slate-500 mt-1">Istilah-istilah ilmiah krusial dalam lingkup Kajian Linguistik Forensik.</p>
+                </div>
+                
+                <div class="relative w-full md:w-80">
+                    <!-- SVG Search Icon -->
+                    <svg class="absolute left-3 top-2.5 w-4.5 h-4.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input 
+                        type="text" 
+                        id="glossary-search-input"
+                        oninput="handleGlossarySearch()"
+                        placeholder="Cari kata atau istilah..."
+                        class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                    />
+                </div>
+            </div>
+
+            <!-- Grid rendering -->
+            <div id="glossary-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Dynamic cards rendering by JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 py-8 text-center text-sm mt-auto">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+          <p class="font-medium text-slate-300">&copy; 2026 Lab Sastrabudi - Universitas Borneo Tarakan.</p>
+          <p class="text-xs text-slate-500">
+            Aplikasi Modul Pembelajaran Interaktif. Seluruh materi diadaptasi dari buku panduan kurikulum 
+            <em>"Modul Linguistik Forensik"</em> oleh Dr. Dwi Cahyono Aji, S.S., M.A.
+          </p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT STATE ENGINE & DATA -->
+    <script>
+        // --- 1. DATA SOURCE (Comprehensive Ebook Content) ---
+        const modulesData = [
+            {
+                id: 1,
+                title: "Modul 1: Pengantar Linguistik Forensik",
+                category: "Konsep Dasar",
+                pages: "19-36",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Definisi Lengkap & Hakikat Keilmuan</h3>
+                    <p class="mb-4">Secara etimologis, istilah forensik berasal dari kata Latin <em>forensis</em> yang berarti berkaitan dengan forum atau ruang publik (peradilan). Dalam ranah modern, <strong>Linguistik Forensik</strong> didefinisikan sebagai subdisiplin ilmu linguistik terapan yang mengaplikasikan teori, metode, dan teknik kebahasaan untuk menganalisis bukti verbal (lisan dan tulis) guna membantu proses penegakan hukum dan peradilan yang berkeadilan.</p>
+                    <p class="mb-4">Rujukan otoritatif dari John Olsson (2008) menjelaskan bahwa linguistik forensik merupakan titik temu tiga dimensi besar: bahasa, kejahatan, dan hukum. Sementara John Gibbons (2003) serta Malcolm Coulthard & Alison Johnson (2010) membagi fokus utamanya menjadi tiga pilar konstitutif:</p>
+                    <ol class="list-decimal pl-5 mb-4 space-y-2">
+                        <li><strong>Bahasa dalam Proses Hukum (Language in Legal Process):</strong> Menyelidiki bahasa verbal penyidik saat interogasi, taktik bertanya penasihat hukum di ruang sidang, serta bagaimana terdakwa menggunakan hak ingkar.</li>
+                        <li><strong>Bahasa dalam Produk Hukum (Language in Legal Product):</strong> Mengkaji formulasi kalimat undang-undang, ambiguitas putusan pengadilan, dan akta-akta notaris yang berpotensi menimbulkan sengketa semantik.</li>
+                        <li><strong>Bahasa sebagai Alat Bukti Hukum (Language as Legal Evidence):</strong> Mengidentifikasi profil penulis anonim (authorship attribution) pada surat kaleng, ancaman siber, dan verifikasi suara sadapan.</li>
+                    </ol>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Keterkaitan Bahasa, Kejahatan, dan Hukum</h3>
+                    <p class="mb-4">Pakar hukum bahasa Peter M. Tiersma mengutarakan postulat terkenal: <em>"Language crimes are all about illegal speech acts"</em>. Kalimat tersebut menegaskan bahwa dalam delik tertentu (pencemaran nama baik, penghinaan, pemerasan, hasutan), tindakan berbahasalah yang diposisikan langsung sebagai perbuatan pidana (<em>actus reus</em>).</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">C. Relevansi dalam Konteks Indonesia</h3>
+                    <p class="mb-4">Di Indonesia, dinamika hukum kebahasaan berkembang sangat masif pasca berlakunya UU No. 11 Tahun 2008 tentang Informasi dan Transaksi Elektronik (UU ITE). Prof. E. Aminudin Aziz memelopori pengenalan disiplin ini dalam penanganan konflik siber nasional, di mana kajian bahasa terapan tidak hanya digunakan di ruang akademik melainkan ditarik langsung untuk memberikan kesaksian ilmiah demi keadilan peradilan Indonesia.</p>
+                `
+            },
+            {
+                id: 2,
+                title: "Modul 2: Sejarah dan Perkembangan Keilmuan",
+                category: "Konsep Dasar",
+                pages: "37-43",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Linimasa Global</h3>
+                    <p class="mb-4">Tonggak sejarah penting ditandai sejak tahun 1952 pada kasus <em>R v. Podola</em> di Inggris yang menguji keaslian klaim amnesia terdakwa menggunakan analisis sosiolinguistik. Pada tahun 1968, Jan Svartvik merilis analisis dokumen pengakuan Evans, yang membuktikan adanya rekayasa transkrip oleh polisi Inggris. Momentum pengakuan institusional global ditandai dengan berdirinya <strong>International Association of Forensic Linguists (IAFL)</strong> pada tahun 1993.</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Sejarah di Indonesia & Kasus Monumental</h3>
+                    <p class="mb-4">Disiplin ini mulai bergeliat sejak akhir tahun 1990-an dan semakin dominan di era kontemporer. Beberapa kasus nasional yang melibatkan kajian bahasa forensik secara mendalam:</p>
+                    <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li><strong>Kasus Kopi Sianida Jessica Wongso (2016):</strong> Melibatkan perdebatan taktis penafsiran maksim kesantunan dan indikasi kebohongan verbal saat wawancara investigatif.</li>
+                        <li><strong>Kasus Pembunuhan Berencana Malang (2019):</strong> Pengungkapan identitas dan motif mutilasi melalui analisis pola semantik budaya pada surat tulisan tangan korban dan pelaku.</li>
+                        <li><strong>Kasus Kritik Sosial Haris Azhar dan Fatia (2023):</strong> Menjadi studi kasus krusial tentang batas demarkasi antara hak kebebasan berpendapat dengan delik pencemaran nama baik pejabat negara.</li>
+                        <li><strong>Kasus Surat Ancaman Kantor MUI (2023):</strong> Membedah profil emosi pelaku penembakan melalui eskalasi leksikal surat tuntutan berbau religiusitas menyimpang.</li>
+                    </ul>
+                `
+            },
+            {
+                id: 3,
+                title: "Modul 3: Bidang Kajian Utama Linguistik Forensik",
+                category: "Bidang Kajian",
+                pages: "44-63",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Sinergi Tiga Pilar Utama</h3>
+                    <p class="mb-4">Ketiga pilar utama dalam linguistik forensik bekerja secara komplementer untuk melayani penegakan hukum:</p>
+                    <h4 class="font-bold text-slate-800 mt-3 mb-1">1. Bahasa dalam Proses Hukum</h4>
+                    <p class="mb-3">Mengamati ketimpangan relasi kuasa sosiolinguistik dalam interogasi polisi. Penyelidik sering menggunakan pertanyaan menjebak (coercive questioning) yang merugikan tersangka non-kooperatif.</p>
+                    <h4 class="font-bold text-slate-800 mt-3 mb-1">2. Bahasa dalam Produk Hukum</h4>
+                    <p class="mb-3">Kritik terhadap formulasi undang-undang yang multi-tafsir. Kajian forensik membantu menyederhanakan bahasa perundang-undangan (plain language movement) agar mudah diakses oleh kelompok marginal.</p>
+                    <h4 class="font-bold text-slate-800 mt-3 mb-1">3. Bahasa sebagai Alat Bukti</h4>
+                    <p class="mb-3">Membantu penyidik menyaring ratusan barang bukti siber berupa teks WhatsApp, e-mail, postingan Instagram, dan rekaman audio guna membuktikan unsur niat jahat (<em>mens rea</em>) pelaku.</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Pelayanan Regional di Kalimantan</h3>
+                    <p class="mb-4">Di Kalimantan Timur dan Kalimantan Utara, Kantor Bahasa Provinsi Kalimantan Timur memainkan peran aktif dengan mendelegasikan saksi ahli bahasa untuk mendampingi penyidik Polda Kaltara, Polda Kaltim, maupun polres-polres setempat dalam penafsiran alat bukti delik kebahasaan siber.</p>
+                `
+            },
+            {
+                id: 4,
+                title: "Modul 4: Analisis Teks dan Dokumen Forensik",
+                category: "Teknik Analisis",
+                pages: "64-81",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Atribusi Kepenulisan (Authorship Attribution)</h3>
+                    <p class="mb-4">Atribusi kepenulisan bertujuan memecahkan teka-teki identitas pengirim teks anonim. Hal ini disandarkan pada premis ilmiah sosiolinguistik bahwa tiap manusia memiliki <strong>Idiolek</strong>—gaya bahasa individual yang bekerja layaknya sidik jari kognitif verbal yang dipengaruhi sosiografis (usia, gender, tingkat pendidikan, asal geografis).</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Metode Stilometri Komputasional & N-Gram</h3>
+                    <p class="mb-4">Analisis modern menggunakan bantuan statistika komputer untuk mengukur kekhasan tulisan:</p>
+                    <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li><strong>Metode N-Gram (Karakter & Kata):</strong> Memecah teks menjadi rangkaian unit 'N' berurutan. Karakter N-gram mendeteksi kebiasaan salah ketik (typo) dan penggunaan tanda baca secara konsisten, sementara kata N-gram menelusuri keunikan pola sintaksis.</li>
+                        <li><strong>Metode Perbandingan Similaritas (Similarity Comparison Method):</strong> Menggunakan koefisien matematika (seperti Jaccard Similarity) untuk membandingkan kecocokan teks sengketa (Q-text) dengan sampel tulisan tersangka (K-text) dengan tingkat akurasi teruji mencapai 85% hingga 96%.</li>
+                        <li><strong>Analisis R Stylo:</strong> Mengekstrak MFW (Most Frequent Words) untuk memisahkan kepenulisan orisinal dengan teks palsu, seperti pada studi pembuktian keaslian surat wasiat bunuh diri Mahira Dinabila di Medan (2023).</li>
+                    </ul>
+                `
+            },
+            {
+                id: 5,
+                title: "Modul 5: Analisis Rekaman Suara dan Bahasa Lisan",
+                category: "Teknik Analisis",
+                pages: "82-99",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Fonetik Forensik Akustik</h3>
+                    <p class="mb-4">Fonetik forensik berfokus pada analisis objektif gelombang suara (akustik) dan biomekanika pita suara manusia. Parameter ilmiah yang diekstrak meliputi:</p>
+                    <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li><strong>Frekuensi Dasar (F0 / Pitch):</strong> Menandakan tinggi-rendahnya nada suara yang diproduksi pita laring.</li>
+                        <li><strong>Frekuensi Forman (F1 - F4):</strong> Resonansi vokal yang merepresentasikan bentuk unik anatomi saluran vokal penutur. Diekstraksi menggunakan perangkat lunak analisis suara <strong>Praat</strong> dengan algoritma LPC-Burg.</li>
+                    </ul>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Investigative Interviewing & Teori Appraisal</h3>
+                    <p class="mb-4">Sistem interogasi modern di Indonesia mulai beralih dari taktik intimidasi fisik menuju interogasi humanis berbasis sains. Salah satu kerangka analisis wacana yang digunakan adalah <strong>Teori Appraisal (SFL)</strong> untuk melacak bahasa evaluatif tersangka guna memilah konsistensi pengakuan. Selain itu, Badan Pemeriksa Keuangan (BPK) RI menerapkan metode interogasi terstruktur model <strong>SANTAI</strong> untuk wawancara investigatif keuangan negara.</p>
+                `
+            },
+            {
+                id: 6,
+                title: "Modul 6: Komunikasi Elektronik & Media Sosial",
+                category: "Kasus Praktis",
+                pages: "100-105",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Tipologi Bahasa Siber</h3>
+                    <p class="mb-4">Bahasa di era siber (media sosial seperti TikTok, WhatsApp, Instagram) dicirikan oleh keringnya konteks non-verbal, yang digantikan oleh emotikon, stiker, dan singkatan non-standar. Kondisi ini memicu tingginya sengketa interpretasi makna yang berujung pada perkara delik ITE.</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Enam Tipologi Perang Bahasa Media Sosial</h3>
+                    <p class="mb-4">Dalam analisis hukum siber di Indonesia, terdapat enam kategori tindak tutur terlarang:</p>
+                    <ol class="list-decimal pl-5 mb-4 space-y-1">
+                        <li><strong>Pencemaran nama baik (Defamation):</strong> Penyerangan kehormatan korban dengan menuduhkan suatu perbuatan tertentu.</li>
+                        <li><strong>Penghinaan (Insult):</strong> Penggunaan makian kasar verbal yang menyerang pribadi seseorang.</li>
+                        <li><strong>Fitnah (Slander/Libel):</strong> Tuduhan palsu yang disebarkan tanpa adanya basis data objektif.</li>
+                        <li><strong>Ujaran Kebencian (Hate Speech):</strong> Provokasi negatif yang menargetkan aspek primordial SARA.</li>
+                        <li><strong>Pengancaman (Threat):</strong> Pernyataan lisan/tulisan yang menjanjikan bahaya fisik/karir bagi korban.</li>
+                        <li><strong>Pemerasan (Extortion):</strong> Ancaman verbal dengan motif meminta imbalan finansial/materi.</li>
+                    </ol>
+                `
+            },
+            {
+                id: 7,
+                title: "Modul 7: Peran Ahli Linguistik di Pengadilan",
+                category: "Persidangan",
+                pages: "106-112",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Kedudukan Hukum Saksi Ahli</h3>
+                    <p class="mb-4">Sesuai dengan ketentuan <strong>Pasal 184 KUHAP</strong>, keterangan ahli merupakan salah satu alat bukti yang sah dalam proses pembuktian di sidang pengadilan pidana. Ahli bertugas untuk menjernihkan masalah bahasa yang tidak dipahami secara ilmiah oleh aparat penegak hukum lainnya (Hakim, Jaksa, Polisi).</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Kode Etik & Penyusunan Laporan</h3>
+                    <p class="mb-4">Seorang ahli linguistik wajib menjunjung tinggi objektivitas dan netralitas ilmiah. Laporan hasil analisis (Laporan Ahli) harus disusun secara logis menggunakan referensi teori linguistik universal tanpa dipengaruhi oleh kubu penuntut maupun penasihat hukum. Di Kalimantan Utara, sinergi ini dibina melalui pelatihan BAP Saksi Ahli bagi mahasiswa Universitas Borneo Tarakan bersama Polres Malinau dan Polres Tarakan.</p>
+                `
+            },
+            {
+                id: 8,
+                title: "Modul 8: Fonetik dan Fonologi Forensik",
+                category: "Linguistik Mikro",
+                pages: "113-132",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Anatomi Sistem Bunyi Forensik</h3>
+                    <p class="mb-4">Kajian fonologi forensik fokus pada pemetaan inventarisasi 32 fonem bahasa Indonesia dan variasi alofon yang terbentuk akibat pengaruh dialek ibu daerah (regional dialect). Perangkat lunak analisis modern yang digunakan seperti <strong>Phonexia Speech Intelligence Resolver (SIR)</strong> oleh Puslabfor Polri memungkinkan deteksi perbandingan suara penutur (Forensic Voice Comparison) dengan presisi tinggi.</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Speaker Profiling & Suara yang Disamarkan</h3>
+                    <p class="mb-4">Terdakwa sering mencoba menyamarkan suaranya (disguised voice) dengan menaikkan atau menurunkan pitch. Namun, analisis spektral vokal jarak jauh menggunakan metode LTAS (Long Term Average Spectrum) tetap dapat menangkap signatur biometrik saluran vokal orisinal terdakwa yang mustahil dipalsukan secara sukarela.</p>
+                `
+            },
+            {
+                id: 9,
+                title: "Modul 9: Morfosintaks & Semantik Forensik",
+                category: "Linguistik Mikro",
+                pages: "133-152",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Morfosintaks: Afiksasi & Analisis Pola Kesalahan BAP</h3>
+                    <p class="mb-4">Kesalahan afiksasi dan deviasi pola gramatikal subjek-predikat yang konsisten seringkali menjadi kunci penentuan apakah BAP yang ditulis oleh penyidik benar-benar mencerminkan kesaksian spontan saksi (terdakwa) ataukah hasil saduran bahasa formal penyidik (distorsi BAP). Model formalisasi kalimat logis siber terus dikembangkan untuk meminimalkan salah interpretasi.</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Semantik: Leksikon Bermuatan Emosional Negatif</h3>
+                    <p class="mb-4">Dalam perkara UU ITE, analisis semantik leksikal digunakan untuk mendefinisikan muatan ejekan kasar konotatif negatif (misalnya diksi 'lonte', 'barbar', 'sok suci'). Penafsiran makna denotatif kamus KBBI wajib dikombinasikan dengan deiksis situasional budaya masyarakat setempat demi menentukan apakah muatannya memenuhi unsur pencemaran nama baik.</p>
+                `
+            },
+            {
+                id: 10,
+                title: "Modul 10: Sosiopragmatik Forensik",
+                category: "Linguistik Makro",
+                pages: "153-176",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Teori Tindak Tutur (Speech Acts) & Kondisi Kebahagiaan</h3>
+                    <p class="mb-4">Pragmatik forensik bertumpu pada klasifikasi tindak tutur J.R. Searle. Dalam delik siber, ujaran ekspresif negatif (makian) dan direktif (ancaman) diuji menggunakan parameter <em>Felicity Conditions</em> (kondisi keselarasan) untuk membuktikan apakah penutur memiliki instrumen kekuasaan atau pengaruh nyata untuk mewujudkan ujarannya.</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Pembuktian Mens Rea Melalui Maksim Percakapan Grice</h3>
+                    <p class="mb-4">Seseorang tidak dapat dihukum tanpa adanya pembuktian niat jahat (<em>mens rea</em>). Penyidik memanfaatkan pelanggaran sengaja (flouting/violating) terhadap maksim kuantitas, kualitas, relevansi, dan cara dalam interogasi untuk mendeteksi rekayasa alibi terdakwa, sehingga memudahkan hakim menakar kejujuran terdakwa di bawah sumpah.</p>
+                `
+            },
+            {
+                id: 11,
+                title: "Modul 11: Gaya Bahasa & Analisis Wacana",
+                category: "Linguistik Makro",
+                pages: "177-196",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Analisis Wacana Kritis (CDA) & Relasi Kuasa</h3>
+                    <p class="mb-4">Mengadopsi model Norman Fairclough, wacana peradilan dianalisis melalui tiga dimensi kritis: struktur teks mikro, praktik diskursif (produksi wacana), dan sosiokultural makro. Taktik manipulasi dominasi kelompok mayoritas terhadap kaum marginal di media siber disorot tajam menggunakan analisis wacana kritis peradilan.</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Studi Kasus Riil Bunuh Diri Malang</h3>
+                    <p class="mb-4">Analisis gaya bahasa (stilistika forensik) diterapkan untuk membedah surat wasiat penyesalan emosional yang ditinggalkan oleh keluarga guru SD di Malang. Deteksi anomali leksikal membuktikan bahwa surat ditulis di bawah tekanan manipulatif kognitif ekstrem yang sangat dalam sebelum tragedi terjadi.</p>
+                `
+            },
+            {
+                id: 12,
+                title: "Modul 12: Praktik & Implementasi Kasus",
+                category: "Proyek Tim",
+                pages: "197-202",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Alur Investigasi Kebahasaan di Indonesia</h3>
+                    <p class="mb-4">Dalam menangani kasus sengketa bahasa, investigator siber Polda/Polres mengacu pada 3 keputusan taktis:</p>
+                    <ul class="list-disc pl-5 mb-4 space-y-1">
+                        <li>Pemberhentian penyelidikan (jika unsur deiksis dan delik semantik tidak terpenuhi).</li>
+                        <li>Restorative Justice (mediasi adat sosial untuk kasus salah paham kebudayaan lokal).</li>
+                        <li>Pemberkasan lanjut ke persidangan (kasus perang bahasa dengan eskalasi pemecah kohesi sosial).</li>
+                    </ul>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Analisis Kasus Obstruction of Justice WhatsApp</h3>
+                    <p class="mb-4">Studi kasus nyata pada komunikasi digital WhatsApp menyangkut perintah: <em>"just use this phone"</em> dan <em>"just sink that one"</em>. Melalui analisis pragmatik, frasa imperatif tersebut terbukti secara kuat mereferensikan niat jahat melenyapkan bukti digital komunikasi fisik, memperkuat bukti hukum tindakan menghalangi penyidikan (obstruction of justice).</p>
+                `
+            },
+            {
+                id: 13,
+                title: "Modul 13: Team-Based Project: Laporan Ahli",
+                category: "Proyek Tim",
+                pages: "203-207",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Panduan Penyusunan Laporan Ahli Bahasa</h3>
+                    <p class="mb-4">Dokumen Laporan Ahli merupakan karya tulis ilmiah orisinal mahasiswa yang bertindak sebagai Saksi Ahli Bahasa. Dokumen ditulis dengan margin formal hukum Indonesia <strong>4-4-3-3</strong> (atas, kiri, bawah, kanan), font Times New Roman 12, spasi 1.5, dengan panjang berkisar 10-15 halaman.</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Struktur Laporan Ahli</h3>
+                    <ol class="list-decimal pl-5 mb-4 space-y-1.5 font-medium text-slate-700">
+                        <li>Halaman Judul & Identitas Kasus Perkara</li>
+                        <li>Identitas Ahli Bahasa</li>
+                        <li>Barang Bukti & Deskripsi Transkrip</li>
+                        <li>Metodologi Uji Linguistik (N-Gram, Praat, Pragmatik Searle)</li>
+                        <li>Analisis dan Pembahasan Ilmiah</li>
+                        <li>Kesimpulan Ahli (Menjawab pertanyaan penyidik)</li>
+                        <li>Rekomendasi Hukum & Tanda Tangan</li>
+                    </ol>
+                `
+            },
+            {
+                id: 14,
+                title: "Modul 14: Presentasi Proyek Akhir",
+                category: "Persidangan",
+                pages: "208-210",
+                content: `
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">A. Simulasi Persidangan Semu (Moot Court)</h3>
+                    <p class="mb-4">Tahapan evaluasi akhir mahasiswa ditekankan pada ketangkasan komunikasi lisan ilmiah. Kelompok mahasiswa mempresentasikan Laporan Ahli selama 15-20 menit di hadapan panel penguji (dosen dan praktisi hukum).</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 border-b pb-1">B. Sesi Uji Silang (Cross-Examination)</h3>
+                    <p class="mb-4">Mahasiswa dilatih untuk mempertahankan temuan ilmiah analisis suara atau teks mereka dari cecaran pertanyaan penuntut umum maupun penasihat hukum simulasi. Penilaian disandarkan pada orisinalitas kasus (10%), keandalan pengumpulan data bukti (15%), kedalaman pisau teori linguistik (30%), kejelasan laporan tertulis (25%), dan ketangkasan argumen lisan (20%).</p>
+                `
+            }
+        ];
+
+        const glossaryData = [
+            { term: "Ahli", definition: "Orang yang dimintakan keterangan ilmiah dan hanya mengemukakan pendapatnya tanpa melakukan pemeriksaan langsung di persidangan." },
+            { term: "Akustik", definition: "Cabang fisika yang mempelajari bunyi dan gelombang suara, sangat penting dalam pemrosesan audio forensik." },
+            { term: "Alofon", definition: "Variasi bunyi dari satu fonem yang tidak membedakan makna, sering mencerminkan pengaruh dialek daerah." },
+            { term: "Analisis wacana", definition: "Analisis terhadap struktur, strategi, dan fungsi wacana dalam konteks situasi sosial tertentu." },
+            { term: "Atribusi kepenulisan", definition: "Penentuan penulis dari suatu teks anonim atau sengketa berdasarkan keunikan karakteristik bahasanya." },
+            { term: "Cyberbullying", definition: "Perundungan atau intimidasi yang dilakukan secara digital melalui media sosial atau platform siber." },
+            { term: "Dialektologi", definition: "Ilmu yang mempelajari variasi-variasi bahasa berdasarkan batas wilayah geografis dan sosial." },
+            { term: "Fonem", definition: "Satuan bunyi terkecil dalam bahasa yang berfungsi membedakan makna kata." },
+            { term: "Fonetik forensik", definition: "Cabang linguistik forensik yang menganalisis bunyi bahasa dan karakteristik akustik suara manusia untuk keperluan pembuktian hukum." },
+            { term: "Fonologi", definition: "Cabang linguistik yang mempelajari sistem, pola, dan distribusi bunyi dalam suatu bahasa." },
+            { term: "Forensik", definition: "Berkaitan dengan forum, peradilan, atau proses hukum yang sah secara konstitusional." },
+            { term: "Forman", definition: "Puncak resonansi saluran vokal manusia yang terlihat jelas dalam visualisasi spektogram suara." },
+            { term: "Frekuensi dasar (F0)", definition: "Kecepatan getaran pita suara yang menentukan tinggi rendahnya nada suara penutur (pitch)." },
+            { term: "Idiolek", definition: "Variasi bahasa yang bersifat sangat khas dan unik bagi setiap individu penutur." },
+            { term: "Ilokusi", definition: "Tindak tutur yang merepresentasikan maksud atau tujuan di balik pengujaran suatu kalimat." },
+            { term: "Implikatur", definition: "Makna tersirat yang tidak diucapkan secara literal oleh penutur di dalam percakapan." },
+            { term: "Intonasi", definition: "Pola naik turunnya nada suara dalam pengujaran frasa atau kalimat." },
+            { term: "Linguistik Forensik", definition: "Cabang ilmu linguistik terapan yang menguji aspek kebahasaan sebagai alat bukti di peradilan hukum." },
+            { term: "Lokusi", definition: "Tindak tutur literal dalam mengucapkan suatu kalimat sesuai arti harfiahnya." },
+            { term: "Maksim percakapan", definition: "Prinsip-prinsip kerja sama komunikasi menurut Grice: kuantitas, kualitas, relevansi, dan cara." },
+            { term: "Morfologi", definition: "Cabang linguistik mikro yang mengkaji struktur pembentukan kata dan morfem." },
+            { term: "N-gram", definition: "Rangkaian rangkaian item (kata atau karakter) berurutan dari suatu teks yang digunakan untuk membandingkan gaya menulis." },
+            { term: "Perlokusi", definition: "Efek atau dampak psikologis/fisik yang ditimbulkan oleh ucapan penutur terhadap pendengar." },
+            { term: "Saksi ahli", definition: "Orang yang bersumpah memberikan keterangan ilmiah di depan sidang pengadilan berdasarkan keahlian khususnya." },
+            { term: "Semantik", definition: "Cabang linguistik yang mempelajari arti, makna, dan interpretasi bahasa." },
+            { term: "Sintaksis", definition: "Cabang linguistik yang mempelajari aturan tata kalimat, frasa, klausa, dan hubungan antarkomponen kalimat." },
+            { term: "Stilometri", definition: "Analisis statistik kuantitatif terhadap gaya bahasa tertulis untuk mengidentifikasi kepenulisan teks." },
+            { term: "Tindak tutur", definition: "Tindakan kebahasaan yang dilakukan melalui pengujaran suatu kalimat (speech act)." }
+        ];
+
+        const topicsData = [
+            { title: "Analisis Bahasa", icon: `<svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>`, desc: "Mengkaji struktur teks dan wacana lisan maupun tulisan." },
+            { title: "Bukti Linguistik", icon: `<svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`, desc: "Menjadikan bahasa sebagai alat bukti sah di peradilan." },
+            { title: "Kasus Hukum", icon: `<svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>`, desc: "Penerapan teori linguistik pada kasus pencemaran nama baik, ancaman, dll." },
+            { title: "Identifikasi Penulis", icon: `<svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>`, desc: "Mengkaji identitas penulis anonim melalui sidik jari bahasa." },
+            { title: "Gaya Bahasa", icon: `<svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>`, desc: "Menganalisis kekhasan (stilometri) individu dalam berbahasa." },
+            { title: "Teks Forensik", icon: `<svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>`, desc: "Pembedahan teks-teks barang bukti seperti surat wasiat atau pesan teror." }
+        ];
+
+        const casesData = [
+            {
+                title: "Kasus 1: Surat Ancaman Anonim (Kasus Kantor MUI)",
+                type: "Teks Forensik",
+                threatLevel: "Tinggi",
+                evidence: "Tunggu saja tanggal mainnya. Kalian merasa punya hukum tapi saya punya keadilan Tuhan. Siapkan peti mati untuk pimpinan kalian jika tuntutan tak dipenuhi.",
+                analysis: {
+                    semantik: "Leksikon 'tanggal mainnya' dan 'peti mati' merupakan ancaman eksis eskalasi intimidasi. Secara semantik struktural, terjadi perpindahan dari frustrasi normatif ke intimidasi fisik yang nyata.",
+                    pragmatik: "Tindak tutur Ilokusi direktif-komisif yang bertujuan mengintimidasi. Tidak memenuhi prinsip kesantunan serta mengarah ke ancaman pidana Pasal 335 KUHP.",
+                    stilometri: "Bahasa baku terstruktur dengan deiksis 'kalian' vs 'saya', mencerminkan pertahanan ego spiritualitas (ego defense mechanism) yang kuat."
+                }
+            },
+            {
+                title: "Kasus 2: Obstruksi Keadilan (Studi Kasus Hasto WA)",
+                type: "Komunikasi Siber",
+                threatLevel: "Sedang",
+                evidence: "Jangan pakai handphone yang lama. Hancurkan saja yang itu atau tenggelamkan langsung biar tidak terlacak penyidik.",
+                analysis: {
+                    semantik: "Kosakata 'hancurkan' dan 'tenggelamkan' mereferensikan instruksi penghilangan objek fisik secara permanen.",
+                    pragmatik: "Tindak tutur ilokusi direktif eksplisit. Adanya niat jahat (mens rea) untuk menyembunyikan alat bukti siber.",
+                    stilometri: "Gaya kalimat imperatif lugas tanpa basa-basi (straightforward directives) yang khas dalam relasi kuasa asimetris."
+                }
+            },
+            {
+                title: "Kasus 3: Pencemaran Nama Baik & Delik SARA",
+                type: "Media Sosial",
+                threatLevel: "Sedang",
+                evidence: "Dasar orang siberia kelakuan barbar. Memang etnis kalian cuma merusak pembangunan daerah saja, pantas gak dihormati.",
+                analysis: {
+                    semantik: "Diksi 'barbar' dan 'merusak' bermuatan konotatif negatif yang menyerang identitas primordial.",
+                    pragmatik: "Tindak tutur ekspresif menghasut (impoliteness). Melanggar ketentuan pidana UU ITE SARA Pasal 28 ayat 2.",
+                    stilometri: "Gaya penulisan hiperbola emosional, menyebarkan stereotip negatif kolektif."
+                }
+            }
+        ];
+
+
+        // --- 2. GLOBAL STATE ---
+        let currentTab = 'beranda';
+        let currentModuleIndex = 0;
+        let fontSizeClass = 'text-base';
+        let bookmarkedChapters = []; // Store index of bookmarked modules
+        let isTTSPlaying = false;
+        let ttsUtterance = null;
+        let selectedCaseIndex = 0;
+        let selectedCaseAnalysisType = null;
+
+
+        // --- 3. STATE CONTROLLERS ---
+        
+        // Tab switching
+        function switchTab(tabId) {
+            currentTab = tabId;
+            
+            // Cancel TTS audio playback on tab navigation
+            if (isTTSPlaying) {
+                stopTTS();
+            }
+
+            // Update Header Navigation Active State
+            const tabs = ['beranda', 'reader', 'kasus', 'glosarium'];
+            tabs.forEach(tab => {
+                const navBtn = document.getElementById(`nav-${tab}`);
+                if (tab === tabId) {
+                    navBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-emerald-600 text-white shadow-lg shadow-emerald-600/35";
+                    document.getElementById(`view-${tab}`).classList.remove('hidden');
+                } else {
+                    navBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-300 hover:bg-slate-800 hover:text-white";
+                    document.getElementById(`view-${tab}`).classList.add('hidden');
+                }
+            });
+
+            // Specific Tab Initializations
+            if (tabId === 'reader') {
+                renderChapterList();
+                renderReaderModule();
+            } else if (tabId === 'kasus') {
+                renderCasesSidebar();
+                renderCaseEvidenceAndAnalysis();
+            } else if (tabId === 'glosarium') {
+                renderGlossary();
+            }
+        }
+
+        // Direct jumps from dashboard
+        function openReaderToModule(index) {
+            currentModuleIndex = index;
+            switchTab('reader');
+        }
+
+
+        // --- 4. VIEW RENDERING UTILITIES ---
+
+        // Home View Topics Grid
+        function renderHomeTopics() {
+            const grid = document.getElementById('topics-grid');
+            grid.innerHTML = topicsData.map(topic => `
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow group">
+                    <div class="bg-emerald-50 w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                        ${topic.icon}
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">${topic.title}</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">${topic.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        // Reader: Sidebar Chapters List
+        function renderChapterList() {
+            const container = document.getElementById('chapter-list-container');
+            container.innerHTML = modulesData.map((m, idx) => {
+                const isActive = idx === currentModuleIndex;
+                const isBookmarked = bookmarkedChapters.includes(idx);
+                return `
+                    <button
+                        onclick="selectChapter(${idx})"
+                        class="w-full text-left p-2.5 rounded-lg text-xs font-medium transition-all flex items-center justify-between ${
+                            isActive
+                                ? 'bg-emerald-50 border border-emerald-200 text-emerald-900 font-extrabold shadow-sm'
+                                : 'text-slate-600 hover:bg-slate-50 border border-transparent'
+                        }"
+                    >
+                        <span class="line-clamp-1 pr-2">${m.title}</span>
+                        ${isBookmarked ? `
+                            <svg class="w-3.5 h-3.5 text-amber-500 fill-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>
+                        ` : ''}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectChapter(idx) {
+            if (isTTSPlaying) stopTTS();
+            currentModuleIndex = idx;
+            renderChapterList();
+            renderReaderModule();
+        }
+
+        // Reader: Active Module Main View
+        function renderReaderModule() {
+            const activeModule = modulesData[currentModuleIndex];
+            
+            document.getElementById('reader-category').innerText = activeModule.category;
+            document.getElementById('reader-title').innerText = activeModule.title;
+            document.getElementById('reader-pages').innerText = activeModule.pages;
+            
+            // Apply current font class
+            const contentDiv = document.getElementById('reader-content');
+            contentDiv.className = `prose max-w-none text-slate-700 leading-relaxed space-y-4 ${fontSizeClass}`;
+            contentDiv.innerHTML = activeModule.content;
+
+            // Pagination status text
+            document.getElementById('reader-pagination-label').innerText = `Bab ${currentModuleIndex + 1} dari ${modulesData.length}`;
+
+            // Handle Previous/Next disabled button states
+            document.getElementById('btn-prev-chapter').disabled = currentModuleIndex === 0;
+            document.getElementById('btn-next-chapter').disabled = currentModuleIndex === modulesData.length - 1;
+
+            // Sync bookmark button visual state
+            syncBookmarkButtonUI();
+        }
+
+        function navigateChapter(direction) {
+            const nextIdx = currentModuleIndex + direction;
+            if (nextIdx >= 0 && nextIdx < modulesData.length) {
+                selectChapter(nextIdx);
+            }
+        }
+
+        // Reader: Font Adjustment Controls
+        function changeFontSize(sizeClass) {
+            fontSizeClass = sizeClass;
+            const fonts = ['text-sm', 'text-base', 'text-lg', 'text-xl'];
+            fonts.forEach(font => {
+                const btn = document.getElementById(`btn-font-${font.split('-')[1]}`);
+                if (font === sizeClass) {
+                    btn.className = "px-2.5 py-1 text-xs rounded-md font-bold transition-all bg-white shadow-sm text-slate-900";
+                } else {
+                    btn.className = "px-2.5 py-1 text-xs rounded-md font-bold transition-all text-slate-500 hover:text-slate-900";
+                }
+            });
+            renderReaderModule();
+        }
+
+        // Reader: Search Filtering
+        function handleReaderSearch() {
+            const query = document.getElementById('reader-search-input').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('reader-search-results');
+
+            if (!query) {
+                resultsContainer.classList.add('hidden');
+                resultsContainer.innerHTML = '';
+                return;
+            }
+
+            const matched = [];
+            modulesData.forEach((m, idx) => {
+                const matchIndex = m.content.toLowerCase().indexOf(query);
+                if (matchIndex !== -1) {
+                    // Extract snippet with offset boundaries safely
+                    const start = Math.max(0, matchIndex - 30);
+                    const end = Math.min(m.content.length, matchIndex + 70);
+                    const rawSnippet = m.content.slice(start, end).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
+                    matched.push({
+                        index: idx,
+                        title: m.title,
+                        snippet: `...${rawSnippet.trim()}...`
+                    });
+                }
+            });
+
+            resultsContainer.classList.remove('hidden');
+            if (matched.length > 0) {
+                resultsContainer.innerHTML = `
+                    <p class="text-xs font-semibold text-slate-500">${matched.length} Hasil ditemukan:</p>
+                    <div class="space-y-1.5">
+                        ${matched.map(res => `
+                            <button
+                                onclick="selectChapter(${res.index}); document.getElementById('reader-search-input').value = ''; handleReaderSearch();"
+                                class="w-full text-left p-2 rounded hover:bg-slate-50 border border-slate-100 transition-all block"
+                            >
+                                <p class="text-xs font-bold text-emerald-700 line-clamp-1">${res.title}</p>
+                                <p class="text-[10px] text-slate-500 line-clamp-2 mt-0.5">${res.snippet}</p>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                resultsContainer.innerHTML = `<p class="text-xs text-slate-400 py-1">Tidak ada hasil ditemukan.</p>`;
+            }
+        }
+
+        // Reader: Bookmarking Core logic
+        function toggleBookmarkCurrent() {
+            const idx = currentModuleIndex;
+            if (bookmarkedChapters.includes(idx)) {
+                bookmarkedChapters = bookmarkedChapters.filter(item => item !== idx);
+            } else {
+                bookmarkedChapters.push(idx);
+            }
+            syncBookmarkButtonUI();
+            renderChapterList(); // update sidebar indicators
+        }
+
+        function syncBookmarkButtonUI() {
+            const isBookmarked = bookmarkedChapters.includes(currentModuleIndex);
+            const btn = document.getElementById('btn-bookmark');
+            const svg = document.getElementById('bookmark-svg');
+            const label = document.getElementById('bookmark-label');
+
+            if (isBookmarked) {
+                btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all border bg-amber-50 text-amber-700 border-amber-200";
+                svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>`;
+                svg.setAttribute('fill', 'currentColor');
+                svg.classList.add('text-amber-500');
+                label.innerText = "Tandai Terbaca";
+            } else {
+                btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all border bg-white text-slate-700 border-slate-200 hover:bg-slate-50";
+                svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>`;
+                svg.setAttribute('fill', 'none');
+                svg.classList.remove('text-amber-500');
+                label.innerText = "Simpan Bab";
+            }
+        }
+
+        // Reader: Text-To-Speech Playback
+        function handleTTSPlay() {
+            if (!window.speechSynthesis) {
+                // Show inline non-blocking notification if not supported
+                showToast("Web Speech (TTS) tidak didukung di peramban Anda.");
+                return;
+            }
+
+            if (isTTSPlaying) {
+                stopTTS();
+                return;
+            }
+
+            // Extract pure legible text from active module html
+            const activeModule = modulesData[currentModuleIndex];
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = activeModule.content;
+            const cleanText = (tempDiv.textContent || tempDiv.innerText || "").slice(0, 1500); // stable buffer safety limit
+
+            ttsUtterance = new SpeechSynthesisUtterance(cleanText);
+            ttsUtterance.lang = 'id-ID'; // set voice dialect to Indonesian
+            
+            ttsUtterance.onend = () => {
+                resetTTSButtonState();
+            };
+            ttsUtterance.onerror = () => {
+                resetTTSButtonState();
+            };
+
+            // Toggle visual state to playing
+            isTTSPlaying = true;
+            const btn = document.getElementById('btn-tts');
+            btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all border bg-rose-50 text-rose-700 border-rose-200 animate-pulse";
+            document.getElementById('tts-icon').innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>`;
+            document.getElementById('tts-label').innerText = "Hentikan Suara";
+
+            window.speechSynthesis.speak(ttsUtterance);
+        }
+
+        function stopTTS() {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            resetTTSButtonState();
+        }
+
+        function resetTTSButtonState() {
+            isTTSPlaying = false;
+            const btn = document.getElementById('btn-tts');
+            btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all border bg-white text-slate-700 border-slate-200 hover:bg-slate-50";
+            document.getElementById('tts-icon').innerHTML = `<svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>`;
+            document.getElementById('tts-label').innerText = "Bacakan Bab Ini";
+        }
+
+
+        // --- 5. VIEW: CASES LAB SIMULATOR ---
+        
+        function renderCasesSidebar() {
+            const container = document.getElementById('cases-sidebar-container');
+            container.innerHTML = casesData.map((c, idx) => {
+                const isActive = idx === selectedCaseIndex;
+                const badgeColor = c.threatLevel === 'Tinggi' ? 'bg-rose-500/20 text-rose-700' : 'bg-amber-500/20 text-amber-700';
+                return `
+                    <button
+                        onclick="selectCase(${idx})"
+                        class="w-full text-left p-4 rounded-xl border transition-all block ${
+                            isActive
+                                ? 'bg-slate-900 border-slate-900 text-white shadow-lg'
+                                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                        }"
+                    >
+                        <div class="flex justify-between items-center text-[10px] mb-1 opacity-75">
+                            <span>${c.type}</span>
+                            <span class="font-bold px-1.5 py-0.5 rounded ${badgeColor}">
+                                Ancaman: ${c.threatLevel}
+                            </span>
+                        </div>
+                        <h4 class="font-extrabold text-sm">${c.title}</h4>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCase(idx) {
+            selectedCaseIndex = idx;
+            selectedCaseAnalysisType = null;
+            renderCasesSidebar();
+            renderCaseEvidenceAndAnalysis();
+        }
+
+        function renderCaseEvidenceAndAnalysis() {
+            const currentCase = casesData[selectedCaseIndex];
+            document.getElementById('case-evidence-text').innerText = `"${currentCase.evidence}"`;
+
+            // Reset triggers colors
+            const analyticalTypes = ['semantik', 'pragmatik', 'stilometri'];
+            analyticalTypes.forEach(type => {
+                const btn = document.getElementById(`btn-analysis-${type}`);
+                if (type === selectedCaseAnalysisType) {
+                    btn.className = "px-4 py-2.5 rounded-xl text-xs font-extrabold border transition-all bg-emerald-600 border-emerald-600 text-white shadow-md";
+                } else {
+                    btn.className = "px-4 py-2.5 rounded-xl text-xs font-extrabold border transition-all bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100";
+                }
+            });
+
+            // Render Output Area
+            const outputArea = document.getElementById('analysis-output-container');
+            if (selectedCaseAnalysisType) {
+                outputArea.innerHTML = `
+                    <div class="space-y-2 animate-fade">
+                        <h4 class="text-xs font-bold text-emerald-600 uppercase tracking-widest">
+                            Laporan Lab: Analisis ${selectedCaseAnalysisType.toUpperCase()}
+                        </h4>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            ${currentCase.analysis[selectedCaseAnalysisType]}
+                        </p>
+                    </div>
+                `;
+            } else {
+                outputArea.innerHTML = `
+                    <div class="text-center text-slate-400 space-y-1.5 py-4">
+                        <!-- SVG HelpCircle -->
+                        <svg class="w-8 h-8 mx-auto text-slate-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-xs font-semibold">Silakan klik salah satu jenis metode pengujian di atas untuk melihat pembongkaran unsur bukti hukum.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function runAnalysis(type) {
+            selectedCaseAnalysisType = type;
+            renderCaseEvidenceAndAnalysis();
+        }
+
+
+        // --- 6. VIEW: GLOSARIUM ---
+
+        function renderGlossary() {
+            const query = document.getElementById('glossary-search-input').value.toLowerCase().trim();
+            const grid = document.getElementById('glossary-cards-grid');
+
+            const filtered = glossaryData.filter(item => 
+                item.term.toLowerCase().includes(query) || 
+                item.definition.toLowerCase().includes(query)
+            );
+
+            if (filtered.length > 0) {
+                grid.innerHTML = filtered.map(item => `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow space-y-2 animate-fade">
+                        <h4 class="font-extrabold text-base text-emerald-600 border-b border-emerald-50 pb-1.5">
+                            ${item.term}
+                        </h4>
+                        <p class="text-slate-600 text-xs leading-relaxed">
+                            ${item.definition}
+                        </p>
+                    </div>
+                `).join('');
+            } else {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-400">
+                        <p class="text-sm">Istilah pencarian tidak ditemukan. Silakan masukkan kata kunci lainnya.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function handleGlossarySearch() {
+            renderGlossary();
+        }
+
+
+        // --- 7. OFFLINE DOWNLOAD SIMULATION MANAGER ---
+
+        function triggerOfflineDownload() {
+            const modal = document.getElementById('download-modal');
+            const progress = document.getElementById('download-progress-bar');
+            const percentage = document.getElementById('download-percentage');
+
+            // Open Modal
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            let currentVal = 0;
+            progress.style.width = '0%';
+            percentage.innerText = '0';
+
+            const interval = setInterval(() => {
+                currentVal += 10;
+                progress.style.width = `${currentVal}%`;
+                percentage.innerText = currentVal;
+
+                if (currentVal >= 100) {
+                    clearInterval(interval);
+                    
+                    // Delay slightly for visual comfort
+                    setTimeout(() => {
+                        // Close Modal
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+
+                        // Execute file-saver payload compilation
+                        executeDownloadSequence();
+                    }, 500);
+                }
+            }, 100);
+        }
+
+        function executeDownloadSequence() {
+            const headerText = `======================================================================\n` +
+                `DOKUMEN BELAJAR LURING: MODUL LINGUISTIK FORENSIK\n` +
+                `Laboratorium Sastrabudi, Program Studi Pendidikan Bahasa Indonesia\n` +
+                `Fakultas Keguruan dan Ilmu Pendidikan, Universitas Borneo Tarakan\n` +
+                `======================================================================\n\n` +
+                `Penulis Buku Ajar: Dr. Dwi Cahyono Aji, S.S., M.A.\n\n`;
+
+            const bodyText = modulesData.map((m) => {
+                // Strip all HTML code tags cleanly for plain-text formatting
+                const cleanContent = m.content
+                    .replace(/<[^>]*>/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+                return `--- ${m.title} (Halaman Asli: ${m.pages}) ---\nKategori Bab: ${m.category}\n\n${cleanContent}\n\n`;
+            }).join('\n');
+
+            // Construct safe text blob & trigger immediate downflow
+            const blob = new Blob([headerText + bodyText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'MODUL_LINGUISTIK_FORENSIK_UBT.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Helper Toast Notification
+        function showToast(message) {
+            // Check for existing toast or create new
+            let toast = document.getElementById('app-toast-alert');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'app-toast-alert';
+                toast.className = "fixed bottom-5 right-5 z-[9999] bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl text-xs font-bold border border-slate-800 transition-all transform translate-y-10 opacity-0 duration-300";
+                document.body.appendChild(toast);
+            }
+            toast.innerText = message;
+            toast.classList.remove('translate-y-10', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+            }, 3000);
+        }
+
+
+        // --- 8. INITIAL RUN ---
+        window.onload = function() {
+            renderHomeTopics();
+            switchTab('beranda');
+        }
+    </script>
+</body>
+</html>
