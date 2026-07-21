@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Sastrabudi PBSI UBT | Leksikostatistik & Glotokronologi</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sastra: {
+                            50: '#fdf8f6',
+                            100: '#f2e8e5',
+                            200: '#eaddd7',
+                            300: '#e0cec7',
+                            400: '#d2bab0',
+                            500: '#a3705d',
+                            600: '#8c523d',
+                            700: '#753b27',
+                            800: '#5c2d1c',
+                            900: '#431f13',
+                        },
+                        maroon: {
+                            600: '#9E1B32',
+                            700: '#821629',
+                            800: '#671120',
+                            900: '#4F0D18',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                        mono: ['Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { background-color: #fdf8f6; color: #431f13; }
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .math-box {
+            background-image: radial-gradient(#eaddd7 1px, transparent 1px);
+            background-size: 16px 16px;
+            background-color: #fdf8f6;
+        }
+        /* Custom toggle switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #9E1B32;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #9E1B32;
+        }
+        .toggle-checkbox {
+            right: 0;
+            z-index: 1;
+            border-color: #e2e8f0;
+            transition: all 0.3s;
+        }
+        .toggle-label {
+            width: 3rem;
+            height: 1.5rem;
+            background-color: #cbd5e1;
+            border-radius: 9999px;
+            transition: all 0.3s;
+        }
+        .toggle-circle {
+            width: 1.25rem;
+            height: 1.25rem;
+            background-color: white;
+            border-radius: 50%;
+            top: 0.125rem;
+            left: 0.125rem;
+            transition: all 0.3s;
+        }
+        .toggle-checkbox:checked ~ .toggle-circle {
+            transform: translateX(1.5rem);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans selection:bg-maroon-700 selection:text-white">
+
+    <header class="bg-maroon-800 text-white shadow-md border-b-4 border-maroon-600">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-maroon-800 text-3xl shadow-inner">
+                        <i class="fa-solid fa-timeline"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-serif font-bold tracking-wide">Lab Sastrabudi UBT</h1>
+                        <p class="text-maroon-200 text-sm md:text-base font-medium">Leksikostatistik & Glotokronologi</p>
+                    </div>
+                </div>
+                <div class="bg-maroon-900 px-4 py-2 rounded-lg text-sm text-maroon-100 border border-maroon-700 shadow-inner flex items-center gap-2">
+                    <i class="fa-solid fa-calculator"></i> Historis Komparatif
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column: Inputs & Tables -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-sastra-200 overflow-hidden flex flex-col h-full">
+                <!-- Tabs -->
+                <div class="bg-sastra-50 border-b border-sastra-200 p-1 flex">
+                    <button onclick="switchTab('calculator')" id="tab-btn-calculator" class="flex-1 py-3 text-sm font-bold text-maroon-800 bg-white rounded-t-lg border-t-2 border-x-2 border-sastra-200 transition-colors">
+                        <i class="fa-solid fa-keyboard mr-1"></i> Kalkulator Cepat
+                    </button>
+                    <button onclick="switchTab('swadesh')" id="tab-btn-swadesh" class="flex-1 py-3 text-sm font-medium text-sastra-600 hover:bg-sastra-100 rounded-t-lg transition-colors border-b-2 border-transparent">
+                        <i class="fa-solid fa-table-list mr-1"></i> Tabel Swadesh
+                    </button>
+                    <button onclick="switchTab('theory')" id="tab-btn-theory" class="flex-1 py-3 text-sm font-medium text-sastra-600 hover:bg-sastra-100 rounded-t-lg transition-colors border-b-2 border-transparent">
+                        <i class="fa-solid fa-book-open mr-1"></i> Teori Dasar
+                    </button>
+                </div>
+
+                <!-- Tab Content: Fast Calculator -->
+                <div id="tab-calculator" class="tab-content active p-6 flex-grow">
+                    <h2 class="text-xl font-serif font-bold text-maroon-900 mb-4">Input Data Leksikostatistik</h2>
+                    <p class="text-sm text-sastra-700 mb-6">Masukkan data jumlah kata dasar yang diperbandingkan dan jumlah kata yang berkerabat (kognat) untuk menghitung estimasi waktu pisah.</p>
+                    
+                    <div class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-sastra-900 mb-1">Nama Bahasa 1</label>
+                                <input type="text" id="lang1-name" placeholder="Misal: Bahasa Tidung" class="w-full px-4 py-2 border border-sastra-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500 bg-sastra-50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-sastra-900 mb-1">Nama Bahasa 2</label>
+                                <input type="text" id="lang2-name" placeholder="Misal: Bahasa Bulungan" class="w-full px-4 py-2 border border-sastra-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500 bg-sastra-50">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-sastra-900 mb-1">Jumlah Kosakata Diperbandingkan (N)</label>
+                            <input type="number" id="input-n" placeholder="Contoh: 200" value="200" class="w-full px-4 py-2 border border-sastra-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500 bg-white">
+                            <p class="text-xs text-sastra-500 mt-1">Biasanya menggunakan 200 atau 100 Daftar Kata Swadesh.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-sastra-900 mb-1">Jumlah Kata Kerabat / Kognat (K)</label>
+                            <input type="number" id="input-k" placeholder="Contoh: 120" class="w-full px-4 py-2 border border-sastra-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500 bg-white">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-sastra-900 mb-1">Indeks Retensi (r)</label>
+                            <select id="input-r" class="w-full px-4 py-2 border border-sastra-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500 bg-white">
+                                <option value="0.805">0.805 (Standar untuk 200 kata Swadesh)</option>
+                                <option value="0.860">0.860 (Standar untuk 100 kata Swadesh)</option>
+                            </select>
+                        </div>
+
+                        <button onclick="calculateFromManualInput()" class="w-full bg-maroon-700 hover:bg-maroon-800 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all mt-4 flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-gears"></i> Proses Analisis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Swadesh Table -->
+                <div id="tab-swadesh" class="tab-content flex-grow flex flex-col h-full relative">
+                    <div class="p-6 border-b border-sastra-200">
+                        <div class="flex justify-between items-end mb-2">
+                            <h2 class="text-xl font-serif font-bold text-maroon-900">Sampel Daftar Swadesh</h2>
+                            <span class="text-xs font-bold bg-maroon-100 text-maroon-800 px-2 py-1 rounded">200 Kosakata Lengkap</span>
+                        </div>
+                        <p class="text-sm text-sastra-700">Tandai tombol (toggle) di kolom "Kerabat" jika kedua kata memiliki kemiripan bentuk dan makna (kognat). Sistem akan menghitung total secara otomatis.</p>
+                    </div>
+                    
+                    <!-- Keyboard Fonetik Virtual -->
+                    <div class="p-3 bg-sastra-100 border-b border-sastra-200 flex flex-wrap gap-2 items-center justify-start">
+                        <span class="text-xs font-bold text-maroon-800 mr-2"><i class="fa-solid fa-keyboard"></i> Simbol IPA:</span>
+                        <button onclick="insertPhonetic('ə')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Schwa (e pepet)">ə</button>
+                        <button onclick="insertPhonetic('ŋ')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Velar nasal (ng)">ŋ</button>
+                        <button onclick="insertPhonetic('ɲ')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Palatal nasal (ny)">ɲ</button>
+                        <button onclick="insertPhonetic('ʔ')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Glottal stop (hamzah)">ʔ</button>
+                        <button onclick="insertPhonetic('ɔ')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Open O">ɔ</button>
+                        <button onclick="insertPhonetic('ɛ')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Open E">ɛ</button>
+                        <button onclick="insertPhonetic('ʃ')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Post-alveolar fricative (sy)">ʃ</button>
+                        <button onclick="insertPhonetic('ɣ')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Velar fricative">ɣ</button>
+                        <button onclick="insertPhonetic('ɨ')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Close central unrounded vowel">ɨ</button>
+                        <button onclick="insertPhonetic('ɓ')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Implosive B">ɓ</button>
+                        <button onclick="insertPhonetic('ɗ')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Implosive D">ɗ</button>
+                        <button onclick="insertPhonetic('ː')" class="px-2 py-1 bg-white border border-sastra-300 rounded shadow-sm hover:bg-maroon-50 text-sm font-mono" title="Pemanjang (length)">ː</button>
+                        <span class="text-xs text-sastra-500 italic ml-2">(Klik pada kolom tabel, lalu klik simbol ini)</span>
+                    </div>
+
+                    <div class="overflow-y-auto flex-grow h-[400px] bg-sastra-50 relative">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-sastra-800 uppercase bg-sastra-200 sticky top-0 z-10 shadow-sm">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 w-10 text-center">No</th>
+                                    <th scope="col" class="px-4 py-3">Makna (Glosa)</th>
+                                    <th scope="col" class="px-4 py-3">Proto-Austronesia</th>
+                                    <th scope="col" class="px-4 py-3">Bahasa A</th>
+                                    <th scope="col" class="px-4 py-3">Bahasa B</th>
+                                    <th scope="col" class="px-4 py-3 text-center">Kerabat?</th>
+                                </tr>
+                            </thead>
+                            <tbody id="swadesh-tbody" class="divide-y divide-sastra-200 bg-white">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t border-sastra-200 bg-white">
+                        <button onclick="calculateFromTable()" class="w-full bg-maroon-700 hover:bg-maroon-800 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-microscope"></i> Analisis Data Tabel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Theory -->
+                <div id="tab-theory" class="tab-content p-6 flex-grow overflow-y-auto h-[500px]">
+                    <h2 class="text-2xl font-serif font-bold text-maroon-900 mb-4 border-b pb-2">Landasan Teori</h2>
+                    
+                    <div class="space-y-6 text-sastra-800 text-sm leading-relaxed">
+                        <div>
+                            <h3 class="text-lg font-bold text-maroon-800 mb-1">1. Leksikostatistik</h3>
+                            <p>Leksikostatistik adalah suatu teknik dalam linguistik historis komparatif untuk menetapkan tingkat kekerabatan bahasa berdasarkan persentase kesamaan kosa kata dasar (kognat). Rumus dasar persentase kekerabatan (C):</p>
+                            <div class="bg-sastra-100 p-3 rounded-lg mt-2 font-mono text-center text-maroon-900 font-bold border border-sastra-200">
+                                C = (K / N) × 100%
+                            </div>
+                            <ul class="list-disc ml-5 mt-2">
+                                <li><strong>C</strong> = Persentase Kekerabatan</li>
+                                <li><strong>K</strong> = Jumlah kata kerabat (kognat)</li>
+                                <li><strong>N</strong> = Jumlah kata yang diperbandingkan</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-bold text-maroon-800 mb-1">2. Glotokronologi (Waktu Pisah)</h3>
+                            <p>Glotokronologi digunakan untuk menghitung umur atau waktu perpisahan dua bahasa yang berkerabat dari satu bahasa proto (induk). Ditemukan oleh Morris Swadesh, rumusnya adalah:</p>
+                            <div class="bg-sastra-100 p-3 rounded-lg mt-2 font-mono text-center text-maroon-900 font-bold border border-sastra-200">
+                                t = log(C) / (2 × log(r))
+                            </div>
+                            <ul class="list-disc ml-5 mt-2">
+                                <li><strong>t</strong> = Waktu pisah dalam milenium (ribuan tahun)</li>
+                                <li><strong>C</strong> = Persentase kata kerabat (dalam bentuk desimal, misal 0.85)</li>
+                                <li><strong>r</strong> = Indeks retensi (konstanta). Biasanya <strong>0.805</strong> untuk daftar 200 kata, atau <strong>0.860</strong> untuk 100 kata.</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-bold text-maroon-800 mb-1">3. Tingkat Kekerabatan (Gudschinsky)</h3>
+                            <p>Berdasarkan persentase (C), bahasa diklasifikasikan menjadi:</p>
+                            <table class="w-full mt-2 border border-sastra-300">
+                                <tr class="bg-sastra-200"><th class="p-2 border border-sastra-300 text-left">Persentase</th><th class="p-2 border border-sastra-300 text-left">Tingkat Kekerabatan</th></tr>
+                                <tr><td class="p-2 border border-sastra-300">81% - 100%</td><td class="p-2 border border-sastra-300">Bahasa yang sama / Dialek</td></tr>
+                                <tr><td class="p-2 border border-sastra-300">36% - 81%</td><td class="p-2 border border-sastra-300">Keluarga Bahasa (Family)</td></tr>
+                                <tr><td class="p-2 border border-sastra-300">12% - 36%</td><td class="p-2 border border-sastra-300">Rumpun Bahasa (Stock)</td></tr>
+                                <tr><td class="p-2 border border-sastra-300">4% - 12%</td><td class="p-2 border border-sastra-300">Mikrofilum (Microphylum)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right Column: Results Dashboard -->
+        <div class="lg:col-span-5 flex flex-col gap-4">
+            <div class="bg-white flex-grow rounded-2xl shadow-sm border border-sastra-200 overflow-hidden relative">
+                
+                <div class="bg-maroon-800 p-4 border-b border-maroon-900">
+                    <h2 class="font-serif font-bold text-white text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie"></i> Hasil Analisis
+                    </h2>
+                </div>
+
+                <!-- Empty State -->
+                <div id="result-empty" class="absolute inset-0 top-[60px] flex flex-col items-center justify-center bg-sastra-50 z-10 text-center p-6">
+                    <div class="text-sastra-300 text-6xl mb-4"><i class="fa-solid fa-file-invoice"></i></div>
+                    <h3 class="text-maroon-900 font-serif font-bold text-lg">Belum Ada Data</h3>
+                    <p class="text-sastra-600 text-sm mt-2">Silakan masukkan data pada panel di sebelah kiri dan klik tombol "Proses Analisis" untuk melihat hasil Leksikostatistik dan Glotokronologi.</p>
+                </div>
+
+                <!-- Result Content -->
+                <div id="result-content" class="p-6 opacity-0 transition-opacity duration-500 bg-white">
+                    
+                    <div class="text-center mb-6">
+                        <p class="text-xs font-bold text-sastra-500 uppercase tracking-wider mb-1">Perbandingan</p>
+                        <h3 class="text-xl font-serif font-bold text-maroon-900" id="res-langs">Bahasa A vs Bahasa B</h3>
+                    </div>
+
+                    <!-- Statistics Grid -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-sastra-50 p-4 rounded-xl border border-sastra-200 text-center">
+                            <p class="text-xs text-sastra-600 font-semibold uppercase mb-1">Kosakata (N)</p>
+                            <p class="text-2xl font-bold text-maroon-700" id="res-n">0</p>
+                        </div>
+                        <div class="bg-sastra-50 p-4 rounded-xl border border-sastra-200 text-center">
+                            <p class="text-xs text-sastra-600 font-semibold uppercase mb-1">Kognat (K)</p>
+                            <p class="text-2xl font-bold text-maroon-700" id="res-k">0</p>
+                        </div>
+                    </div>
+
+                    <!-- Major Results -->
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-maroon-600 pl-4 py-1">
+                            <p class="text-sm text-sastra-600 font-medium">Persentase Kekerabatan (C)</p>
+                            <div class="flex items-baseline gap-2">
+                                <p class="text-3xl font-bold text-maroon-900" id="res-c">0%</p>
+                                <span class="text-sm font-bold px-2 py-0.5 rounded bg-maroon-100 text-maroon-800" id="res-level">Level</span>
+                            </div>
+                        </div>
+
+                        <div class="border-l-4 border-sastra-500 pl-4 py-1">
+                            <p class="text-sm text-sastra-600 font-medium">Estimasi Usia Perpisahan</p>
+                            <p class="text-2xl font-bold text-sastra-900" id="res-t">0 <span class="text-base font-normal">tahun yang lalu</span></p>
+                        </div>
+
+                        <div class="border-l-4 border-sastra-500 pl-4 py-1">
+                            <p class="text-sm text-sastra-600 font-medium">Tahun Terpisah (Estimasi)</p>
+                            <p class="text-xl font-bold text-sastra-900" id="res-year">Tahun 0</p>
+                        </div>
+                    </div>
+
+                    <!-- Mathematical Breakdown (Transparency) -->
+                    <div class="mt-8 math-box rounded-xl p-4 border border-sastra-300">
+                        <h4 class="text-xs font-bold text-maroon-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-square-root-variable"></i> Penjabaran Rumus
+                        </h4>
+                        <div class="font-mono text-xs text-sastra-800 space-y-2 overflow-x-auto">
+                            <p>C = K / N = <span id="math-k">0</span> / <span id="math-n">0</span> = <span id="math-c-dec">0</span></p>
+                            <p>t = log(C) / (2 * log(r))</p>
+                            <p>t = log(<span id="math-c-log">0</span>) / (2 * log(<span id="math-r">0</span>))</p>
+                            <p>t = <span id="math-log-c">0</span> / (2 * <span id="math-log-r">0</span>)</p>
+                            <p>t = <span id="math-t-mil">0</span> milenium</p>
+                            <p class="pt-2 border-t border-sastra-300 text-maroon-800">
+                                Waktu pisah = t * 1000 = <span id="math-final-years" class="font-bold">0</span> tahun.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-maroon-900 text-maroon-200 py-6 border-t border-maroon-950 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="font-serif italic mb-1 text-maroon-300">"Menelusuri jejak peradaban melalui rekonstruksi bahasa."</p>
+            <p class="text-sm">© 2026 Laboratorium Pendidikan Bahasa Indonesia. Universitas Borneo Tarakan.</p>
+        </div>
+    </footer>
+
+        <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
+
+    <script>
+        const CURRENT_YEAR = 2026;
+        let lastActiveInput = null;
+
+        // Sample Swadesh List (200 Words with PAN glosses where available)
+        const swadeshSample = [
+            { id: 1, word: "saya", pan: "*aku", l1: "", l2: "", cognate: false },
+            { id: 2, word: "engkau/kamu", pan: "*iSu / *kaSú", l1: "", l2: "", cognate: false },
+            { id: 3, word: "dia", pan: "*si-ia", l1: "", l2: "", cognate: false },
+            { id: 4, word: "kami", pan: "*kami", l1: "", l2: "", cognate: false },
+            { id: 5, word: "kalian", pan: "*kamu", l1: "", l2: "", cognate: false },
+            { id: 6, word: "mereka", pan: "*si-ida", l1: "", l2: "", cognate: false },
+            { id: 7, word: "ini", pan: "*i-ni", l1: "", l2: "", cognate: false },
+            { id: 8, word: "itu", pan: "*i-tu", l1: "", l2: "", cognate: false },
+            { id: 9, word: "di sini", pan: "", l1: "", l2: "", cognate: false },
+            { id: 10, word: "di sana", pan: "", l1: "", l2: "", cognate: false },
+            { id: 11, word: "siapa", pan: "*si-nu", l1: "", l2: "", cognate: false },
+            { id: 12, word: "apa", pan: "*apa", l1: "", l2: "", cognate: false },
+            { id: 13, word: "di mana", pan: "", l1: "", l2: "", cognate: false },
+            { id: 14, word: "kapan", pan: "", l1: "", l2: "", cognate: false },
+            { id: 15, word: "bagaimana", pan: "", l1: "", l2: "", cognate: false },
+            { id: 16, word: "bukan/tidak", pan: "*ukan", l1: "", l2: "", cognate: false },
+            { id: 17, word: "semua", pan: "", l1: "", l2: "", cognate: false },
+            { id: 18, word: "banyak", pan: "", l1: "", l2: "", cognate: false },
+            { id: 19, word: "beberapa", pan: "", l1: "", l2: "", cognate: false },
+            { id: 20, word: "sedikit", pan: "", l1: "", l2: "", cognate: false },
+            { id: 21, word: "lain", pan: "", l1: "", l2: "", cognate: false },
+            { id: 22, word: "satu", pan: "*esa / *isa", l1: "", l2: "", cognate: false },
+            { id: 23, word: "dua", pan: "*duSa", l1: "", l2: "", cognate: false },
+            { id: 24, word: "tiga", pan: "*telu", l1: "", l2: "", cognate: false },
+            { id: 25, word: "empat", pan: "*Sepat", l1: "", l2: "", cognate: false },
+            { id: 26, word: "lima", pan: "*lima", l1: "", l2: "", cognate: false },
+            { id: 27, word: "besar", pan: "", l1: "", l2: "", cognate: false },
+            { id: 28, word: "panjang", pan: "", l1: "", l2: "", cognate: false },
+            { id: 29, word: "lebar", pan: "", l1: "", l2: "", cognate: false },
+            { id: 30, word: "tebal", pan: "", l1: "", l2: "", cognate: false },
+            { id: 31, word: "berat", pan: "", l1: "", l2: "", cognate: false },
+            { id: 32, word: "kecil", pan: "", l1: "", l2: "", cognate: false },
+            { id: 33, word: "pendek", pan: "", l1: "", l2: "", cognate: false },
+            { id: 34, word: "sempit", pan: "", l1: "", l2: "", cognate: false },
+            { id: 35, word: "tipis", pan: "", l1: "", l2: "", cognate: false },
+            { id: 36, word: "perempuan", pan: "*ba-baHi", l1: "", l2: "", cognate: false },
+            { id: 37, word: "laki-laki", pan: "*ma-Ruqanay", l1: "", l2: "", cognate: false },
+            { id: 38, word: "manusia", pan: "*Cau", l1: "", l2: "", cognate: false },
+            { id: 39, word: "anak", pan: "*aNak", l1: "", l2: "", cognate: false },
+            { id: 40, word: "istri", pan: "", l1: "", l2: "", cognate: false },
+            { id: 41, word: "suami", pan: "", l1: "", l2: "", cognate: false },
+            { id: 42, word: "ibu", pan: "*ina", l1: "", l2: "", cognate: false },
+            { id: 43, word: "ayah", pan: "*ama", l1: "", l2: "", cognate: false },
+            { id: 44, word: "binatang", pan: "*qaNup", l1: "", l2: "", cognate: false },
+            { id: 45, word: "ikan", pan: "*Sikan", l1: "", l2: "", cognate: false },
+            { id: 46, word: "burung", pan: "*manuk", l1: "", l2: "", cognate: false },
+            { id: 47, word: "anjing", pan: "*asu", l1: "", l2: "", cognate: false },
+            { id: 48, word: "kutu", pan: "*kutu", l1: "", l2: "", cognate: false },
+            { id: 49, word: "ular", pan: "*SulaR", l1: "", l2: "", cognate: false },
+            { id: 50, word: "ulat", pan: "", l1: "", l2: "", cognate: false },
+            { id: 51, word: "pohon", pan: "*kaSui", l1: "", l2: "", cognate: false },
+            { id: 52, word: "hutan", pan: "*halas", l1: "", l2: "", cognate: false },
+            { id: 53, word: "ranting", pan: "", l1: "", l2: "", cognate: false },
+            { id: 54, word: "buah", pan: "", l1: "", l2: "", cognate: false },
+            { id: 55, word: "biji", pan: "", l1: "", l2: "", cognate: false },
+            { id: 56, word: "daun", pan: "*dahun", l1: "", l2: "", cognate: false },
+            { id: 57, word: "akar", pan: "*wakaR", l1: "", l2: "", cognate: false },
+            { id: 58, word: "kulit kayu", pan: "", l1: "", l2: "", cognate: false },
+            { id: 59, word: "bunga", pan: "", l1: "", l2: "", cognate: false },
+            { id: 60, word: "rumput", pan: "", l1: "", l2: "", cognate: false },
+            { id: 61, word: "tali", pan: "", l1: "", l2: "", cognate: false },
+            { id: 62, word: "kulit", pan: "", l1: "", l2: "", cognate: false },
+            { id: 63, word: "daging", pan: "*Sesi", l1: "", l2: "", cognate: false },
+            { id: 64, word: "darah", pan: "*daRaq", l1: "", l2: "", cognate: false },
+            { id: 65, word: "tulang", pan: "*tuqelaN", l1: "", l2: "", cognate: false },
+            { id: 66, word: "lemak", pan: "", l1: "", l2: "", cognate: false },
+            { id: 67, word: "telur", pan: "*qateluR", l1: "", l2: "", cognate: false },
+            { id: 68, word: "tanduk", pan: "", l1: "", l2: "", cognate: false },
+            { id: 69, word: "ekor", pan: "", l1: "", l2: "", cognate: false },
+            { id: 70, word: "bulu", pan: "*bulu", l1: "", l2: "", cognate: false },
+            { id: 71, word: "rambut", pan: "*bukeS", l1: "", l2: "", cognate: false },
+            { id: 72, word: "kepala", pan: "*qulu", l1: "", l2: "", cognate: false },
+            { id: 73, word: "telinga", pan: "*taliNa", l1: "", l2: "", cognate: false },
+            { id: 74, word: "mata", pan: "*maCa", l1: "", l2: "", cognate: false },
+            { id: 75, word: "hidung", pan: "*ijuN", l1: "", l2: "", cognate: false },
+            { id: 76, word: "mulut", pan: "*baqbaq", l1: "", l2: "", cognate: false },
+            { id: 77, word: "gigi", pan: "*Nipen", l1: "", l2: "", cognate: false },
+            { id: 78, word: "lidah", pan: "*Sema", l1: "", l2: "", cognate: false },
+            { id: 79, word: "kuku", pan: "*kuku", l1: "", l2: "", cognate: false },
+            { id: 80, word: "kaki", pan: "*qaqay", l1: "", l2: "", cognate: false },
+            { id: 81, word: "tungkai", pan: "", l1: "", l2: "", cognate: false },
+            { id: 82, word: "lutut", pan: "", l1: "", l2: "", cognate: false },
+            { id: 83, word: "tangan", pan: "*lima", l1: "", l2: "", cognate: false },
+            { id: 84, word: "sayap", pan: "", l1: "", l2: "", cognate: false },
+            { id: 85, word: "perut", pan: "*tiaN", l1: "", l2: "", cognate: false },
+            { id: 86, word: "usus", pan: "", l1: "", l2: "", cognate: false },
+            { id: 87, word: "leher", pan: "", l1: "", l2: "", cognate: false },
+            { id: 88, word: "punggung", pan: "*likud", l1: "", l2: "", cognate: false },
+            { id: 89, word: "payudara", pan: "*susu", l1: "", l2: "", cognate: false },
+            { id: 90, word: "jantung", pan: "", l1: "", l2: "", cognate: false },
+            { id: 91, word: "hati", pan: "*qatay", l1: "", l2: "", cognate: false },
+            { id: 92, word: "minum", pan: "*minum", l1: "", l2: "", cognate: false },
+            { id: 93, word: "makan", pan: "*kaen", l1: "", l2: "", cognate: false },
+            { id: 94, word: "gigit", pan: "", l1: "", l2: "", cognate: false },
+            { id: 95, word: "isap", pan: "", l1: "", l2: "", cognate: false },
+            { id: 96, word: "ludah", pan: "", l1: "", l2: "", cognate: false },
+            { id: 97, word: "muntah", pan: "*utaq", l1: "", l2: "", cognate: false },
+            { id: 98, word: "tiup", pan: "*tiup", l1: "", l2: "", cognate: false },
+            { id: 99, word: "napas", pan: "", l1: "", l2: "", cognate: false },
+            { id: 100, word: "tawa", pan: "*tawa", l1: "", l2: "", cognate: false },
+            { id: 101, word: "lihat", pan: "*kita", l1: "", l2: "", cognate: false },
+            { id: 102, word: "dengar", pan: "*deneR", l1: "", l2: "", cognate: false },
+            { id: 103, word: "tahu", pan: "", l1: "", l2: "", cognate: false },
+            { id: 104, word: "pikir", pan: "", l1: "", l2: "", cognate: false },
+            { id: 105, word: "cium (bau)", pan: "", l1: "", l2: "", cognate: false },
+            { id: 106, word: "takut", pan: "*takut", l1: "", l2: "", cognate: false },
+            { id: 107, word: "tidur", pan: "*tuduR", l1: "", l2: "", cognate: false },
+            { id: 108, word: "hidup", pan: "*qudip", l1: "", l2: "", cognate: false },
+            { id: 109, word: "mati", pan: "*m-atay", l1: "", l2: "", cognate: false },
+            { id: 110, word: "bunuh", pan: "", l1: "", l2: "", cognate: false },
+            { id: 111, word: "kelahi", pan: "", l1: "", l2: "", cognate: false },
+            { id: 112, word: "buru", pan: "", l1: "", l2: "", cognate: false },
+            { id: 113, word: "pukul", pan: "", l1: "", l2: "", cognate: false },
+            { id: 114, word: "potong", pan: "", l1: "", l2: "", cognate: false },
+            { id: 115, word: "belah", pan: "", l1: "", l2: "", cognate: false },
+            { id: 116, word: "tikam", pan: "", l1: "", l2: "", cognate: false },
+            { id: 117, word: "gores", pan: "", l1: "", l2: "", cognate: false },
+            { id: 118, word: "gali", pan: "*kali", l1: "", l2: "", cognate: false },
+            { id: 119, word: "renang", pan: "", l1: "", l2: "", cognate: false },
+            { id: 120, word: "terbang", pan: "", l1: "", l2: "", cognate: false },
+            { id: 121, word: "jalan", pan: "", l1: "", l2: "", cognate: false },
+            { id: 122, word: "datang", pan: "*um-aRi", l1: "", l2: "", cognate: false },
+            { id: 123, word: "baring", pan: "", l1: "", l2: "", cognate: false },
+            { id: 124, word: "duduk", pan: "*tuduk", l1: "", l2: "", cognate: false },
+            { id: 125, word: "berdiri", pan: "", l1: "", l2: "", cognate: false },
+            { id: 126, word: "belok", pan: "", l1: "", l2: "", cognate: false },
+            { id: 127, word: "jatuh", pan: "", l1: "", l2: "", cognate: false },
+            { id: 128, word: "beri", pan: "", l1: "", l2: "", cognate: false },
+            { id: 129, word: "pegang", pan: "", l1: "", l2: "", cognate: false },
+            { id: 130, word: "peras", pan: "", l1: "", l2: "", cognate: false },
+            { id: 131, word: "gosok", pan: "", l1: "", l2: "", cognate: false },
+            { id: 132, word: "cuci", pan: "", l1: "", l2: "", cognate: false },
+            { id: 133, word: "usap", pan: "", l1: "", l2: "", cognate: false },
+            { id: 134, word: "tarik", pan: "", l1: "", l2: "", cognate: false },
+            { id: 135, word: "dorong", pan: "", l1: "", l2: "", cognate: false },
+            { id: 136, word: "lempar", pan: "", l1: "", l2: "", cognate: false },
+            { id: 137, word: "ikat", pan: "", l1: "", l2: "", cognate: false },
+            { id: 138, word: "jahit", pan: "", l1: "", l2: "", cognate: false },
+            { id: 139, word: "hitung", pan: "", l1: "", l2: "", cognate: false },
+            { id: 140, word: "kata", pan: "", l1: "", l2: "", cognate: false },
+            { id: 141, word: "nyanyi", pan: "", l1: "", l2: "", cognate: false },
+            { id: 142, word: "main", pan: "", l1: "", l2: "", cognate: false },
+            { id: 143, word: "apung", pan: "", l1: "", l2: "", cognate: false },
+            { id: 144, word: "alir", pan: "", l1: "", l2: "", cognate: false },
+            { id: 145, word: "beku", pan: "", l1: "", l2: "", cognate: false },
+            { id: 146, word: "bengkak", pan: "", l1: "", l2: "", cognate: false },
+            { id: 147, word: "matahari", pan: "*waRi", l1: "", l2: "", cognate: false },
+            { id: 148, word: "bulan", pan: "*bulaN", l1: "", l2: "", cognate: false },
+            { id: 149, word: "bintang", pan: "*bituqen", l1: "", l2: "", cognate: false },
+            { id: 150, word: "air", pan: "*daNum", l1: "", l2: "", cognate: false },
+            { id: 151, word: "hujan", pan: "*quzaN", l1: "", l2: "", cognate: false },
+            { id: 152, word: "sungai", pan: "", l1: "", l2: "", cognate: false },
+            { id: 153, word: "danau", pan: "", l1: "", l2: "", cognate: false },
+            { id: 154, word: "laut", pan: "*tasik", l1: "", l2: "", cognate: false },
+            { id: 155, word: "garam", pan: "*qasiN", l1: "", l2: "", cognate: false },
+            { id: 156, word: "batu", pan: "*batu", l1: "", l2: "", cognate: false },
+            { id: 157, word: "pasir", pan: "", l1: "", l2: "", cognate: false },
+            { id: 158, word: "debu", pan: "", l1: "", l2: "", cognate: false },
+            { id: 159, word: "bumi/tanah", pan: "*taneq", l1: "", l2: "", cognate: false },
+            { id: 160, word: "awan", pan: "", l1: "", l2: "", cognate: false },
+            { id: 161, word: "kabut", pan: "", l1: "", l2: "", cognate: false },
+            { id: 162, word: "langit", pan: "*laNit", l1: "", l2: "", cognate: false },
+            { id: 163, word: "angin", pan: "*haNin", l1: "", l2: "", cognate: false },
+            { id: 164, word: "salju", pan: "", l1: "", l2: "", cognate: false },
+            { id: 165, word: "es", pan: "", l1: "", l2: "", cognate: false },
+            { id: 166, word: "asap", pan: "", l1: "", l2: "", cognate: false },
+            { id: 167, word: "api", pan: "*Sapuy", l1: "", l2: "", cognate: false },
+            { id: 168, word: "abu", pan: "*qabu", l1: "", l2: "", cognate: false },
+            { id: 169, word: "bakar", pan: "", l1: "", l2: "", cognate: false },
+            { id: 170, word: "jalan (benda)", pan: "*zalan", l1: "", l2: "", cognate: false },
+            { id: 171, word: "gunung", pan: "", l1: "", l2: "", cognate: false },
+            { id: 172, word: "merah", pan: "*ma-iRaq", l1: "", l2: "", cognate: false },
+            { id: 173, word: "hijau", pan: "", l1: "", l2: "", cognate: false },
+            { id: 174, word: "kuning", pan: "", l1: "", l2: "", cognate: false },
+            { id: 175, word: "putih", pan: "*putiq", l1: "", l2: "", cognate: false },
+            { id: 176, word: "hitam", pan: "*qitem", l1: "", l2: "", cognate: false },
+            { id: 177, word: "malam", pan: "*Rabii", l1: "", l2: "", cognate: false },
+            { id: 178, word: "hari", pan: "*waRi", l1: "", l2: "", cognate: false },
+            { id: 179, word: "tahun", pan: "*taqun", l1: "", l2: "", cognate: false },
+            { id: 180, word: "hangat", pan: "", l1: "", l2: "", cognate: false },
+            { id: 181, word: "dingin", pan: "", l1: "", l2: "", cognate: false },
+            { id: 182, word: "penuh", pan: "*penuq", l1: "", l2: "", cognate: false },
+            { id: 183, word: "baru", pan: "*baqeRu", l1: "", l2: "", cognate: false },
+            { id: 184, word: "tua", pan: "", l1: "", l2: "", cognate: false },
+            { id: 185, word: "baik", pan: "", l1: "", l2: "", cognate: false },
+            { id: 186, word: "buruk", pan: "", l1: "", l2: "", cognate: false },
+            { id: 187, word: "busuk", pan: "", l1: "", l2: "", cognate: false },
+            { id: 188, word: "kotor", pan: "", l1: "", l2: "", cognate: false },
+            { id: 189, word: "lurus", pan: "", l1: "", l2: "", cognate: false },
+            { id: 190, word: "bulat", pan: "", l1: "", l2: "", cognate: false },
+            { id: 191, word: "tajam", pan: "", l1: "", l2: "", cognate: false },
+            { id: 192, word: "tumpul", pan: "", l1: "", l2: "", cognate: false },
+            { id: 193, word: "licin", pan: "", l1: "", l2: "", cognate: false },
+            { id: 194, word: "basah", pan: "", l1: "", l2: "", cognate: false },
+            { id: 195, word: "kering", pan: "", l1: "", l2: "", cognate: false },
+            { id: 196, word: "benar", pan: "", l1: "", l2: "", cognate: false },
+            { id: 197, word: "dekat", pan: "", l1: "", l2: "", cognate: false },
+            { id: 198, word: "jauh", pan: "", l1: "", l2: "", cognate: false },
+            { id: 199, word: "kanan", pan: "", l1: "", l2: "", cognate: false },
+            { id: 200, word: "kiri", pan: "*wiRi", l1: "", l2: "", cognate: false }
+        ];
+
+        // UI Initialization
+        window.onload = function() {
+            renderSwadeshTable();
+        };
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('[id^="tab-btn-"]').forEach(el => {
+                el.className = "flex-1 py-3 text-sm font-medium text-sastra-600 hover:bg-sastra-100 rounded-t-lg transition-colors border-b-2 border-transparent";
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            document.getElementById(`tab-btn-${tabId}`).className = "flex-1 py-3 text-sm font-bold text-maroon-800 bg-white rounded-t-lg border-t-2 border-x-2 border-sastra-200 transition-colors";
+        }
+
+        // Render Swadesh Table
+        function renderSwadeshTable() {
+            const tbody = document.getElementById('swadesh-tbody');
+            tbody.innerHTML = '';
+
+            swadeshSample.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-sastra-50 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-4 py-2 text-center text-sastra-600 font-medium">${item.id}</td>
+                    <td class="px-4 py-2 font-semibold text-sastra-900">${item.word}</td>
+                    <td class="px-4 py-2 font-mono text-sm text-sastra-600 italic">${item.pan || '-'}</td>
+                    <td class="px-4 py-2"><input type="text" class="w-full px-2 py-1 border border-sastra-300 rounded text-sm focus:border-maroon-500 focus:ring-1 focus:ring-maroon-500 font-mono font-bold text-sastra-800" placeholder="[ fɔ.nɛ.tik ]" id="l1-${index}" onfocus="lastActiveInput = this"></td>
+                    <td class="px-4 py-2"><input type="text" class="w-full px-2 py-1 border border-sastra-300 rounded text-sm focus:border-maroon-500 focus:ring-1 focus:ring-maroon-500 font-mono font-bold text-sastra-800" placeholder="[ fɔ.nɛ.tik ]" id="l2-${index}" onfocus="lastActiveInput = this"></td>
+                    <td class="px-4 py-2 text-center">
+                        <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="cognate-${index}" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                            <label for="cognate-${index}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                            <div class="toggle-circle absolute block"></div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function insertPhonetic(symbol) {
+            if (!lastActiveInput) {
+                showToast("Silakan klik salah satu kolom isian Bahasa A atau B terlebih dahulu.", "warning");
+                return;
+            }
+            
+            const start = lastActiveInput.selectionStart;
+            const end = lastActiveInput.selectionEnd;
+            const text = lastActiveInput.value;
+            
+            // Sisipkan simbol di lokasi kursor
+            lastActiveInput.value = text.substring(0, start) + symbol + text.substring(end);
+            
+            // Kembalikan kursor ke posisi setelah simbol yang disisipkan
+            lastActiveInput.selectionStart = lastActiveInput.selectionEnd = start + symbol.length;
+            lastActiveInput.focus();
+        }
+
+        function getRelationshipLevel(cPercentage) {
+            if (cPercentage >= 81) return "Dialek / Bahasa Sama";
+            if (cPercentage >= 36) return "Keluarga Bahasa (Family)";
+            if (cPercentage >= 12) return "Rumpun Bahasa (Stock)";
+            if (cPercentage >= 4) return "Mikrofilum";
+            return "Makrofilum / Kekerabatan Sangat Jauh";
+        }
+
+        function executeGlottochronology(k, n, r, lang1, lang2) {
+            // Validation
+            if (isNaN(k) || isNaN(n) || n <= 0 || k < 0) {
+                showToast("Angka input tidak valid.", "error");
+                return;
+            }
+            if (k > n) {
+                showToast("Jumlah Kognat (K) tidak boleh lebih besar dari Total Kosakata (N).", "error");
+                return;
+            }
+
+            const cDecimal = k / n;
+            const cPercentage = (cDecimal * 100).toFixed(1);
+            
+            let tMillennia = 0;
+            let separationYears = 0;
+            let estYear = 0;
+
+            // Mathematical breakdown values
+            let mathLogC = 0;
+            let mathLogR = 0;
+
+            if (cDecimal === 1) {
+                // Same language exactly
+                tMillennia = 0;
+                separationYears = 0;
+                estYear = CURRENT_YEAR;
+            } else if (cDecimal === 0) {
+                // No relation at all
+                separationYears = "Tidak terhingga";
+                estYear = "Tidak diketahui";
+            } else {
+                mathLogC = Math.log(cDecimal);
+                mathLogR = Math.log(r);
+                tMillennia = mathLogC / (2 * mathLogR);
+                separationYears = Math.round(tMillennia * 1000);
+                estYear = CURRENT_YEAR - separationYears;
+            }
+
+            // Update UI
+            document.getElementById('result-empty').style.display = 'none';
+            document.getElementById('result-content').classList.remove('opacity-0');
+
+            document.getElementById('res-langs').innerText = `${lang1 || 'Bahasa A'} vs ${lang2 || 'Bahasa B'}`;
+            document.getElementById('res-n').innerText = n;
+            document.getElementById('res-k').innerText = k;
+            document.getElementById('res-c').innerText = `${cPercentage}%`;
+            
+            const level = getRelationshipLevel(cPercentage);
+            document.getElementById('res-level').innerText = level;
+
+            if(typeof separationYears === 'number') {
+                document.getElementById('res-t').innerHTML = `${separationYears.toLocaleString('id-ID')} <span class="text-base font-normal">tahun yang lalu</span>`;
+                // Handling BC/AD (SM/M)
+                let yearStr = estYear < 0 ? `${Math.abs(estYear).toLocaleString('id-ID')} SM` : `${estYear.toLocaleString('id-ID')} M`;
+                document.getElementById('res-year').innerText = yearStr;
+            } else {
+                document.getElementById('res-t').innerText = separationYears;
+                document.getElementById('res-year').innerText = estYear;
+            }
+
+            // Update Math Breakdown
+            document.getElementById('math-k').innerText = k;
+            document.getElementById('math-n').innerText = n;
+            document.getElementById('math-c-dec').innerText = cDecimal.toFixed(4);
+            document.getElementById('math-c-log').innerText = cDecimal.toFixed(4);
+            document.getElementById('math-r').innerText = r;
+            document.getElementById('math-log-c').innerText = typeof mathLogC === 'number' ? mathLogC.toFixed(4) : '-';
+            document.getElementById('math-log-r').innerText = typeof mathLogR === 'number' ? mathLogR.toFixed(4) : '-';
+            document.getElementById('math-t-mil').innerText = typeof tMillennia === 'number' ? tMillennia.toFixed(4) : '-';
+            document.getElementById('math-final-years').innerText = typeof separationYears === 'number' ? separationYears.toLocaleString('id-ID') : '-';
+
+            showToast("Analisis berhasil dihitung!", "success");
+        }
+
+        function calculateFromManualInput() {
+            const lang1 = document.getElementById('lang1-name').value;
+            const lang2 = document.getElementById('lang2-name').value;
+            const n = parseInt(document.getElementById('input-n').value);
+            const k = parseInt(document.getElementById('input-k').value);
+            const r = parseFloat(document.getElementById('input-r').value);
+
+            if(!lang1 || !lang2) {
+                showToast("Disarankan mengisi nama kedua bahasa.", "warning");
+            }
+
+            executeGlottochronology(k, n, r, lang1, lang2);
+        }
+
+        function calculateFromTable() {
+            const n = swadeshSample.length; // Total rows in sample
+            let k = 0;
+
+            for(let i=0; i<n; i++) {
+                const isCognate = document.getElementById(`cognate-${i}`).checked;
+                if(isCognate) k++;
+            }
+
+            // Default to 200-word list retention rate for theoretical accuracy, 
+            // even though sample is small
+            const r = 0.805; 
+            
+            executeGlottochronology(k, n, r, "Bahasa Kolom 1", "Bahasa Kolom 2");
+        }
+
+
+        function showToast(message, type = "info") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = "bg-gray-800";
+            let icon = "fa-circle-info";
+            
+            if (type === "success") {
+                bgClass = "bg-green-700";
+                icon = "fa-circle-check";
+            } else if (type === "error") {
+                bgClass = "bg-red-700";
+                icon = "fa-triangle-exclamation";
+            } else if (type === "warning") {
+                bgClass = "bg-yellow-600";
+                icon = "fa-circle-exclamation";
+            }
+
+            toast.className = `${bgClass} text-white px-5 py-3 rounded-xl shadow-lg border border-white/20 flex items-center gap-3 transform translate-x-full transition-all duration-300 ease-out max-w-sm`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> <p class="text-sm font-medium leading-tight">${message}</p>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 10);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
