@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projek Kepemimpinan PPG UBT - Non BK 40132</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Custom hook for Local Storage
+        function useLocalStorage(key, initialValue) {
+            const [storedValue, setStoredValue] = useState(() => {
+                try {
+                    const item = window.localStorage.getItem(key);
+                    return item ? JSON.parse(item) : initialValue;
+                } catch (error) {
+                    console.error(error);
+                    return initialValue;
+                }
+            });
+
+            const setValue = (value) => {
+                try {
+                    const valueToStore = value instanceof Function ? value(storedValue) : value;
+                    setStoredValue(valueToStore);
+                    window.localStorage.setItem(key, JSON.stringify(valueToStore));
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+            return [storedValue, setValue];
+        }
+
+        const Bab1Visi = ({ data, updateData }) => {
+            const getWordCount = (text) => {
+                if (!text) return 0;
+                return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+            };
+
+            const refleksiCount = getWordCount(data.refleksi || '');
+
+            return (
+                <div className="space-y-6 fade-in">
+                    {/* PT 1.1 Refleksi Etika Profesi */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-blue-500">
+                        <div className="flex justify-between items-start mb-4">
+                            <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                <i data-lucide="book-open" className="w-6 h-6 mr-2 text-blue-600"></i>
+                                PT 1.1: Refleksi Etika Profesi Guru
+                            </h2>
+                            <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Bobot: 5%</span>
+                        </div>
+                        <p className="text-gray-600 text-sm mb-4">
+                            Buatlah refleksi etika profesi guru yang berketuhanan dan menjunjung tinggi nilai-nilai Pancasila dalam mengambil keputusan. (Minimal 100 kata).
+                        </p>
+                        <textarea 
+                            className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all min-h-[150px]"
+                            placeholder="Tuliskan refleksi Anda di sini..."
+                            value={data.refleksi || ''}
+                            onChange={(e) => updateData('refleksi', e.target.value)}
+                        ></textarea>
+                        <div className={`text-sm mt-2 font-medium ${refleksiCount < 100 ? 'text-rose-500' : 'text-emerald-500'}`}>
+                            Jumlah Kata: {refleksiCount} / 100
+                        </div>
+                    </div>
+
+                    {/* PT 2.1 Setting Personal Interest */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-indigo-500">
+                        <div className="flex justify-between items-start mb-4">
+                            <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                <i data-lucide="compass" className="w-6 h-6 mr-2 text-indigo-600"></i>
+                                PT 2.1: Setting Personal Interest & Visi
+                            </h2>
+                            <span className="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">Bobot: 5%</span>
+                        </div>
+                        <p className="text-gray-600 text-sm mb-6">Petakan visi, tantangan, dan kekuatan diri menggunakan kerangka pola pikir bertumbuh (Growth Mindset).</p>
+                        
+                        <div className="space-y-6">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-2">Visi Guru Profesional (Perspective Taking)</label>
+                                <textarea 
+                                    className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 min-h-[100px]"
+                                    placeholder="Visi saya adalah..."
+                                    value={data.visi || ''}
+                                    onChange={(e) => updateData('visi', e.target.value)}
+                                ></textarea>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Pemetaan Tantangan</label>
+                                    <textarea 
+                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 min-h-[120px]"
+                                        placeholder="Identifikasi masalah di komunitas/sekolah..."
+                                        value={data.tantangan || ''}
+                                        onChange={(e) => updateData('tantangan', e.target.value)}
+                                    ></textarea>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Pemetaan Kekuatan</label>
+                                    <textarea 
+                                        className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 min-h-[120px]"
+                                        placeholder="Kekuatan aset, dukungan masyarakat, atau potensi internal..."
+                                        value={data.kekuatan || ''}
+                                        onChange={(e) => updateData('kekuatan', e.target.value)}
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Bab2Perencanaan = ({ data, updateData }) => {
+            const sdgsOptions = [
+                "1. Tanpa kemiskinan", "2. Tanpa kelaparan", "3. Kehidupan sehat dan sejahtera",
+                "4. Pendidikan berkualitas", "5. Kesetaraan gender", "6. Air bersih dan sanitasi layak",
+                "7. Energi bersih dan terjangkau", "8. Pekerjaan layak dan pertumbuhan ekonomi",
+                "9. Industri, inovasi, dan infrastruktur", "10. Berkurangnya kesenjangan",
+                "11. Kota dan komunitas berkelanjutan", "12. Konsumsi dan produksi yang bertanggung jawab",
+                "13. Penanganan perubahan iklim", "14. Ekosistem laut", "15. Ekosistem daratan",
+                "16. Perdamaian, keadilan, dan kelembagaan yang tangguh", "17. Kemitraan untuk mencapai tujuan"
+            ];
+
+            return (
+                <div className="space-y-6 fade-in">
+                    {/* Identitas Projek */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i data-lucide="target" className="w-6 h-6 mr-2 text-indigo-600"></i>
+                            Identitas Projek & SDGs
+                        </h2>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Nama/Topik Projek</label>
+                                <input 
+                                    type="text" 
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Contoh: Program Jumat Membaca di SD Ciseeng"
+                                    value={data.topik || ''}
+                                    onChange={(e) => updateData('topik', e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Keterkaitan dengan SDGs</label>
+                                <select 
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                    value={data.sdgs || ''}
+                                    onChange={(e) => updateData('sdgs', e.target.value)}
+                                >
+                                    <option value="">-- Pilih Tujuan SDGs --</option>
+                                    {sdgsOptions.map(sdg => (
+                                        <option key={sdg} value={sdg}>{sdg}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* PT 4.1 Golden Circle */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-amber-500">
+                        <div className="flex justify-between items-start mb-4">
+                            <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                <i data-lucide="circle-dot" className="w-6 h-6 mr-2 text-amber-500"></i>
+                                PT 4.1: Three Golden Circles (Why, How, What)
+                            </h2>
+                            <span className="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded">Bobot: 5%</span>
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">WHY (Mengapa)</label>
+                                <textarea className="w-full p-3 border border-gray-300 rounded-lg" rows="2"
+                                    value={data.why || ''} onChange={(e) => updateData('why', e.target.value)}></textarea>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">HOW (Bagaimana)</label>
+                                <textarea className="w-full p-3 border border-gray-300 rounded-lg" rows="2"
+                                    value={data.how || ''} onChange={(e) => updateData('how', e.target.value)}></textarea>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">WHAT (Apa)</label>
+                                <textarea className="w-full p-3 border border-gray-300 rounded-lg" rows="2"
+                                    value={data.what || ''} onChange={(e) => updateData('what', e.target.value)}></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* PT 5.1 Mind Map */}
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-purple-500">
+                            <div className="flex justify-between items-start mb-4">
+                                <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                    <i data-lucide="share-2" className="w-6 h-6 mr-2 text-purple-600"></i>
+                                    PT 5.1: Mind Map
+                                </h2>
+                                <span className="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">Bobot: 10%</span>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-4">Tautkan link Mind Map Perancangan Projek (Canva, Miro, Google Drive).</p>
+                            <input 
+                                type="url" 
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                placeholder="https://link-mindmap..."
+                                value={data.mindMapLink || ''}
+                                onChange={(e) => updateData('mindMapLink', e.target.value)}
+                            />
+                        </div>
+
+                        {/* PT 7.1 Proposal UTS */}
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-cyan-500">
+                            <div className="flex justify-between items-start mb-4">
+                                <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                    <i data-lucide="file-text" className="w-6 h-6 mr-2 text-cyan-600"></i>
+                                    PT 7.1: Proposal & UTS
+                                </h2>
+                                <span className="bg-cyan-100 text-cyan-800 text-xs font-semibold px-2.5 py-0.5 rounded">Bobot: 15%</span>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-4">Tautkan link Dokumen Proposal dan Slide Presentasi UTS.</p>
+                            <input 
+                                type="url" 
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500"
+                                placeholder="https://link-proposal-uts..."
+                                value={data.proposalLink || ''}
+                                onChange={(e) => updateData('proposalLink', e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    {/* PT 6.1 SMART Goals */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-green-500">
+                        <div className="flex justify-between items-start mb-4">
+                            <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                <i data-lucide="check-square" className="w-6 h-6 mr-2 text-green-600"></i>
+                                PT 6.1: SMART Goals
+                            </h2>
+                            <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Bobot: 10%</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {['Specific', 'Measurable', 'Achievable', 'Relevant', 'Time-bound'].map(key => (
+                                <div key={key} className={key === 'Time-bound' ? 'md:col-span-2' : ''}>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">{key}</label>
+                                    <textarea 
+                                        className="w-full p-3 border border-gray-300 rounded-lg" 
+                                        rows="2"
+                                        placeholder={`Deskripsikan aspek ${key}...`}
+                                        value={data[`smart_${key}`] || ''} 
+                                        onChange={(e) => updateData(`smart_${key}`, e.target.value)}
+                                    ></textarea>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Bab3Implementasi = ({ data, updateData }) => {
+            const [newLog, setNewLog] = useState({ date: '', activity: '', reflection: '' });
+            const logs = data.logs || [];
+
+            const addLog = () => {
+                if(newLog.date && newLog.activity) {
+                    const updatedLogs = [...logs, { ...newLog, id: Date.now() }];
+                    updateData('logs', updatedLogs);
+                    setNewLog({ date: '', activity: '', reflection: '' });
+                }
+            };
+
+            const deleteLog = (id) => {
+                const updatedLogs = logs.filter(log => log.id !== id);
+                updateData('logs', updatedLogs);
+            };
+
+            return (
+                <div className="space-y-6 fade-in">
+                    
+                    {/* PT 8.1 Journaling */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-indigo-500">
+                        <div className="flex justify-between items-start mb-4">
+                            <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                <i data-lucide="clipboard-list" className="w-6 h-6 mr-2 text-indigo-600"></i>
+                                PT 8.1: Journaling & Monitoring Implementasi
+                            </h2>
+                            <span className="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">Bobot: 10%</span>
+                        </div>
+                        <p className="text-gray-600 text-sm mb-6">
+                            Catat pelaksanaan projek harian yang dibersamai oleh Dosen Pembimbing Projek (DPP). Lakukan refleksi menggunakan alat Think-Pair-Share dengan memilih 4 dari 7 kebiasaan efektif pemimpin.
+                        </p>
+                        
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
+                            <h3 className="font-semibold text-gray-700 mb-3">Tambah Jurnal Baru</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-600 mb-1">Tanggal</label>
+                                    <input type="date" className="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500" 
+                                        value={newLog.date} onChange={e => setNewLog({...newLog, date: e.target.value})} />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-xs font-bold text-gray-600 mb-1">Aktivitas Koordinasi / Eksekusi</label>
+                                    <input type="text" className="w-full p-2 border border-gray-300 rounded focus:ring-indigo-500" placeholder="Contoh: Koordinasi dengan DPP, Pelaksanaan kegiatan..."
+                                        value={newLog.activity} onChange={e => setNewLog({...newLog, activity: e.target.value})} />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-600 mb-1">Refleksi (Think-Pair-Share & Habit Pemimpin)</label>
+                                <textarea className="w-full p-2 border border-gray-300 rounded mb-3 focus:ring-indigo-500" rows="2" placeholder="Bagaimana prosesnya? Habit apa yang Anda terapkan hari ini?"
+                                    value={newLog.reflection} onChange={e => setNewLog({...newLog, reflection: e.target.value})}></textarea>
+                            </div>
+                            <button onClick={addLog} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                Simpan Jurnal
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            {logs.length === 0 ? (
+                                <div className="text-center p-8 text-gray-400 border-2 border-dashed rounded-lg">
+                                    Belum ada entri jurnal.
+                                </div>
+                            ) : (
+                                logs.map(log => (
+                                    <div key={log.id} className="relative p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                        <button onClick={() => deleteLog(log.id)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500">
+                                            <i data-lucide="trash-2" className="w-5 h-5"></i>
+                                        </button>
+                                        <div className="flex items-center text-sm text-indigo-600 font-bold mb-1">
+                                            <i data-lucide="calendar" className="w-4 h-4 mr-1"></i> {log.date}
+                                        </div>
+                                        <h4 className="font-bold text-gray-800 mb-2">{log.activity}</h4>
+                                        <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded">{log.reflection}</p>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Bab4Monev = ({ data, updateData }) => {
+            return (
+                <div className="space-y-6 fade-in">
+                    {/* PT 9.1 Evaluasi Projek */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-rose-500">
+                        <div className="flex justify-between items-start mb-4">
+                            <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                <i data-lucide="pie-chart" className="w-6 h-6 mr-2 text-rose-600"></i>
+                                PT 9.1: Evaluasi & Dampak Projek
+                            </h2>
+                            <span className="bg-rose-100 text-rose-800 text-xs font-semibold px-2.5 py-0.5 rounded">Bobot: 10%</span>
+                        </div>
+                        <p className="text-gray-600 text-sm mb-4">Evaluasi kriteria pencapaian, kepemimpinan kolaboratif, adaptabilitas, dan penerapan growth mindset.</p>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Capaian Tujuan & Kepemimpinan Kolaboratif</label>
+                                <textarea className="w-full p-3 border border-gray-300 rounded-lg focus:ring-rose-500" rows="3"
+                                    value={data.evaluasiSukses || ''} onChange={(e) => updateData('evaluasiSukses', e.target.value)}></textarea>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Proses, Adaptabilitas & Hambatan</label>
+                                <textarea className="w-full p-3 border border-gray-300 rounded-lg focus:ring-rose-500" rows="3"
+                                    value={data.evaluasiHambatan || ''} onChange={(e) => updateData('evaluasiHambatan', e.target.value)}></textarea>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Dampak Projek & Rencana Keberlangsungan (Jangka Panjang)</label>
+                                <textarea className="w-full p-3 border border-gray-300 rounded-lg focus:ring-rose-500" rows="3"
+                                    value={data.evaluasiLanjut || ''} onChange={(e) => updateData('evaluasiLanjut', e.target.value)}></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Model Refleksi What, So What, Now What */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-purple-500">
+                        <div className="flex justify-between items-start mb-4">
+                            <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                <i data-lucide="brain" className="w-6 h-6 mr-2 text-purple-600"></i>
+                                Refleksi Komitmen Akhir
+                            </h2>
+                        </div>
+                        <p className="text-gray-600 text-sm mb-4">Gunakan model refleksi <b>"What? So What? Now What?"</b> dengan mengedepankan pembelajaran mendalam (Deep Learning).</p>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">WHAT? (Apa yang terjadi? Deskripsi obyektif)</label>
+                                <textarea className="w-full p-3 border border-gray-300 rounded-lg" rows="2"
+                                    value={data.refleksiWhat || ''} onChange={(e) => updateData('refleksiWhat', e.target.value)}></textarea>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">SO WHAT? (Mengapa itu penting? Analisis makna)</label>
+                                <textarea className="w-full p-3 border border-gray-300 rounded-lg" rows="2"
+                                    value={data.refleksiSoWhat || ''} onChange={(e) => updateData('refleksiSoWhat', e.target.value)}></textarea>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">NOW WHAT? (Apa selanjutnya? Tindak lanjut & Komitmen)</label>
+                                <textarea className="w-full p-3 border border-gray-300 rounded-lg" rows="2"
+                                    value={data.refleksiNowWhat || ''} onChange={(e) => updateData('refleksiNowWhat', e.target.value)}></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* PT 10.1 & PT 11.1 Akhir */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-emerald-500">
+                            <div className="flex justify-between items-start mb-4">
+                                <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                    <i data-lucide="book" className="w-6 h-6 mr-2 text-emerald-600"></i>
+                                    PT 10.1: Laporan Akhir
+                                </h2>
+                                <span className="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded">Bobot: 20%</span>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-4">Tautkan link Laporan Akhir Projek Kepemimpinan dengan format baku.</p>
+                            <input 
+                                type="url" 
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                                placeholder="https://link-laporan-akhir..."
+                                value={data.laporanAkhirLink || ''}
+                                onChange={(e) => updateData('laporanAkhirLink', e.target.value)}
+                            />
+                        </div>
+
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-amber-500">
+                            <div className="flex justify-between items-start mb-4">
+                                <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                    <i data-lucide="monitor-play" className="w-6 h-6 mr-2 text-amber-600"></i>
+                                    PT 11.1: Presentasi UAS
+                                </h2>
+                                <span className="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded">Bobot: 10%</span>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-4">Tautkan link Video/Slide Presentasi Produk Akhir (UAS).</p>
+                            <input 
+                                type="url" 
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                                placeholder="https://link-presentasi-uas..."
+                                value={data.uasLink || ''}
+                                onChange={(e) => updateData('uasLink', e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Dashboard = ({ data, setTab }) => {
+            return (
+                <div className="space-y-8 fade-in">
+                    {/* Header Banner */}
+                    <div className="bg-gradient-to-br from-indigo-900 via-blue-800 to-blue-900 rounded-3xl p-8 md:p-10 text-white shadow-2xl relative overflow-hidden border border-blue-700/50">
+                        <div className="relative z-10">
+                            <div className="flex flex-wrap items-center gap-2 mb-4">
+                                <span className="bg-blue-900/60 border border-blue-400/30 text-blue-200 text-xs font-bold px-3 py-1.5 rounded-full">MK 40132 Non-BK</span>
+                                <span className="bg-blue-900/60 border border-blue-400/30 text-blue-200 text-xs font-bold px-3 py-1.5 rounded-full">PPG Universitas Borneo Tarakan</span>
+                            </div>
+                            <h1 className="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight">Sistem Manajemen Projek Kepemimpinan</h1>
+                            <p className="opacity-90 max-w-3xl text-sm md:text-base leading-relaxed mb-4 text-blue-50">
+                                Mata kuliah berbasis proyek yang dirancang untuk mengembangkan kemampuan kepemimpinan mahasiswa calon guru. Membentuk pendidik yang <b className="text-white">resilien, reflektif</b>, dan siap memimpin transformasi melalui <b className="text-white">Growth Mindset</b>.
+                            </p>
+                        </div>
+                        <i data-lucide="graduation-cap" className="absolute -bottom-10 -right-10 w-64 h-64 text-white opacity-5 transform -rotate-12"></i>
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+                    </div>
+
+                    {/* Capaian Pembelajaran */}
+                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                        <h2 className="text-xl font-extrabold text-slate-800 mb-5 flex items-center">
+                            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center mr-3 text-indigo-600">
+                                <i data-lucide="target" className="w-6 h-6"></i>
+                            </div>
+                            Capaian Pembelajaran Mata Kuliah (CPMK)
+                        </h2>
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-600">
+                            <li className="flex items-start bg-slate-50 p-4 rounded-xl border border-slate-100 hover:border-indigo-200 transition-colors"><i data-lucide="check-circle-2" className="w-5 h-5 mr-3 text-emerald-500 mt-0.5 flex-shrink-0"></i> <span>(1a) Refleksi etika profesi guru berketuhanan & Pancasila.</span></li>
+                            <li className="flex items-start bg-slate-50 p-4 rounded-xl border border-slate-100 hover:border-indigo-200 transition-colors"><i data-lucide="check-circle-2" className="w-5 h-5 mr-3 text-emerald-500 mt-0.5 flex-shrink-0"></i> <span>(1b) Kepemimpinan belajar (growth mindset & deep learning).</span></li>
+                            <li className="flex items-start bg-slate-50 p-4 rounded-xl border border-slate-100 hover:border-indigo-200 transition-colors"><i data-lucide="check-circle-2" className="w-5 h-5 mr-3 text-emerald-500 mt-0.5 flex-shrink-0"></i> <span>(6a) Merancang Projek Kepemimpinan secara komprehensif.</span></li>
+                            <li className="flex items-start bg-slate-50 p-4 rounded-xl border border-slate-100 hover:border-indigo-200 transition-colors"><i data-lucide="check-circle-2" className="w-5 h-5 mr-3 text-emerald-500 mt-0.5 flex-shrink-0"></i> <span>(13a & 13b) Evaluasi, implementasi, karya nyata & sustainability.</span></li>
+                        </ul>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                        {/* Card 1 */}
+                        <div onClick={() => setTab('bab1')} className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl border border-slate-100 cursor-pointer transition-all duration-300 transform hover:-translate-y-2 group relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+                            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+                            <div>
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 flex items-center justify-center text-2xl font-black shadow-inner border border-blue-200 group-hover:scale-110 transition-transform duration-300">
+                                        1
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                                        <i data-lucide="compass" className="w-6 h-6"></i>
+                                    </div>
+                                </div>
+                                <h3 className="font-extrabold text-lg text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">Bab 1: Visi</h3>
+                                <p className="text-sm text-slate-500 mb-4 leading-relaxed">Merumuskan visi guru profesional menggunakan pola pikir bertumbuh (Growth Mindset).</p>
+                            </div>
+                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-50">
+                                <span className="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1.5 rounded-full border border-blue-100">10% Bobot</span>
+                                <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                                    <i data-lucide="arrow-right" className="w-4 h-4 text-blue-500 group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card 2 */}
+                        <div onClick={() => setTab('bab2')} className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl border border-slate-100 cursor-pointer transition-all duration-300 transform hover:-translate-y-2 group relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+                            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+                            <div>
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100 text-orange-600 flex items-center justify-center text-2xl font-black shadow-inner border border-amber-200 group-hover:scale-110 transition-transform duration-300">
+                                        2
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-500 group-hover:bg-orange-500 group-hover:text-white transition-colors duration-300">
+                                        <i data-lucide="map" className="w-6 h-6"></i>
+                                    </div>
+                                </div>
+                                <h3 className="font-extrabold text-lg text-slate-800 mb-2 group-hover:text-orange-600 transition-colors">Bab 2: Perencanaan</h3>
+                                <p className="text-sm text-slate-500 mb-4 leading-relaxed">Pemetaan SDGs, Three Golden Circles, Mind Map & perumusan SMART Goals.</p>
+                            </div>
+                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-50">
+                                <span className="bg-amber-50 text-orange-700 text-xs font-bold px-3 py-1.5 rounded-full border border-amber-100">40% Bobot</span>
+                                <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
+                                    <i data-lucide="arrow-right" className="w-4 h-4 text-orange-500 group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card 3 */}
+                        <div onClick={() => setTab('bab3')} className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl border border-slate-100 cursor-pointer transition-all duration-300 transform hover:-translate-y-2 group relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+                            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-400 to-purple-500"></div>
+                            <div>
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-100 text-indigo-600 flex items-center justify-center text-2xl font-black shadow-inner border border-indigo-200 group-hover:scale-110 transition-transform duration-300">
+                                        3
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+                                        <i data-lucide="activity" className="w-6 h-6"></i>
+                                    </div>
+                                </div>
+                                <h3 className="font-extrabold text-lg text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">Bab 3: Implementasi</h3>
+                                <p className="text-sm text-slate-500 mb-4 leading-relaxed">Eksekusi projek, Journaling, dan monitoring dibersamai oleh Dosen Pembimbing.</p>
+                            </div>
+                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-50">
+                                <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-100">10% Bobot</span>
+                                <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
+                                    <i data-lucide="arrow-right" className="w-4 h-4 text-indigo-500 group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card 4 */}
+                        <div onClick={() => setTab('bab4')} className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl border border-slate-100 cursor-pointer transition-all duration-300 transform hover:-translate-y-2 group relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+                            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+                            <div>
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-100 text-teal-600 flex items-center justify-center text-2xl font-black shadow-inner border border-teal-200 group-hover:scale-110 transition-transform duration-300">
+                                        4
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 group-hover:bg-teal-500 group-hover:text-white transition-colors duration-300">
+                                        <i data-lucide="pie-chart" className="w-6 h-6"></i>
+                                    </div>
+                                </div>
+                                <h3 className="font-extrabold text-lg text-slate-800 mb-2 group-hover:text-teal-600 transition-colors">Bab 4: Monev</h3>
+                                <p className="text-sm text-slate-500 mb-4 leading-relaxed">Evaluasi dampak, Refleksi "What, So What, Now What", dan Laporan UAS.</p>
+                            </div>
+                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-50">
+                                <span className="bg-teal-50 text-teal-700 text-xs font-bold px-3 py-1.5 rounded-full border border-teal-100">40% Bobot</span>
+                                <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-teal-100 transition-colors">
+                                    <i data-lucide="arrow-right" className="w-4 h-4 text-teal-500 group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('dashboard');
+            const [projectData, setProjectData] = useLocalStorage('projek-kepemimpinan-rps-data', {});
+
+            useEffect(() => {
+                lucide.createIcons();
+            }, [activeTab, projectData]);
+
+            const updateData = (key, value) => {
+                setProjectData(prev => ({ ...prev, [key]: value }));
+            };
+
+            const exportData = () => {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projectData, null, 2));
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "Laporan_RPS_Projek_Kepemimpinan_UBT.json");
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            };
+
+            const clearData = () => {
+                const isConfirmed = window.confirm("Apakah Anda yakin ingin mereset seluruh data projek? Data yang dihapus tidak dapat dikembalikan.");
+                if(isConfirmed) {
+                    setProjectData({});
+                }
+            };
+
+            return (
+                <div className="flex h-screen overflow-hidden bg-slate-50">
+                    {/* Sidebar */}
+                    <div className="w-72 bg-slate-900 text-white flex flex-col hidden md:flex border-r border-slate-800">
+                        <div className="p-6 pb-2">
+                            <h1 className="font-bold text-xl leading-tight text-slate-100">Projek<br/><span className="text-blue-400">Kepemimpinan</span></h1>
+                            <div className="mt-2 space-y-1">
+                                <p className="text-[10px] text-slate-300 font-medium bg-slate-800 inline-block px-2 py-1 rounded">PPG Univ. Borneo Tarakan</p>
+                                <p className="text-[10px] text-slate-400 font-medium bg-slate-800 inline-block px-2 py-1 rounded">MK 40132 Non-BK</p>
+                            </div>
+                        </div>
+                        <nav className="flex-1 px-4 space-y-2 mt-4 overflow-y-auto">
+                            <button onClick={() => setActiveTab('dashboard')} className={`w-full flex items-center px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === 'dashboard' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-800'}`}>
+                                <i data-lucide="layout-dashboard" className="w-5 h-5 mr-3 opacity-80"></i> Dashboard Utama
+                            </button>
+                            <button onClick={() => setActiveTab('bab1')} className={`w-full flex items-center px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === 'bab1' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-800'}`}>
+                                <i data-lucide="eye" className="w-5 h-5 mr-3 opacity-80"></i> 1. Visi Profesional
+                            </button>
+                            <button onClick={() => setActiveTab('bab2')} className={`w-full flex items-center px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === 'bab2' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-800'}`}>
+                                <i data-lucide="target" className="w-5 h-5 mr-3 opacity-80"></i> 2. Perencanaan Projek
+                            </button>
+                            <button onClick={() => setActiveTab('bab3')} className={`w-full flex items-center px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === 'bab3' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-800'}`}>
+                                <i data-lucide="activity" className="w-5 h-5 mr-3 opacity-80"></i> 3. Implementasi Projek
+                            </button>
+                            <button onClick={() => setActiveTab('bab4')} className={`w-full flex items-center px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === 'bab4' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-800'}`}>
+                                <i data-lucide="pie-chart" className="w-5 h-5 mr-3 opacity-80"></i> 4. Monev & Refleksi
+                            </button>
+                        </nav>
+                        <div className="p-4 border-t border-slate-800 bg-slate-900">
+                            <button onClick={exportData} className="w-full flex items-center justify-center px-4 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition-colors mb-2 border border-slate-700">
+                                <i data-lucide="download" className="w-4 h-4 mr-2 text-blue-400"></i> Ekspor JSON
+                            </button>
+                            <button onClick={clearData} className="w-full flex items-center justify-center px-4 py-2.5 text-rose-400 hover:bg-rose-500 hover:text-white rounded-lg text-sm transition-colors border border-transparent hover:border-rose-400">
+                                <i data-lucide="trash" className="w-4 h-4 mr-2"></i> Reset Data
+                            </button>
+                            <div className="text-center mt-3 text-[10px] text-slate-500">Kemdikbudristek RI</div>
+                        </div>
+                    </div>
+
+                    {/* Main Content Area */}
+                    <div className="flex-1 flex flex-col h-full overflow-hidden">
+                        {/* Mobile Header */}
+                        <div className="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shadow-md z-10">
+                            <h1 className="font-bold text-md">Projek Kepemimpinan UBT</h1>
+                            <div className="flex space-x-1">
+                                <button onClick={() => setActiveTab('dashboard')} className={`p-2 rounded ${activeTab === 'dashboard' ? 'bg-blue-600' : ''}`}><i data-lucide="home" className="w-4 h-4"></i></button>
+                                <button onClick={() => setActiveTab('bab1')} className={`p-2 rounded ${activeTab === 'bab1' ? 'bg-blue-600' : ''}`}>1</button>
+                                <button onClick={() => setActiveTab('bab2')} className={`p-2 rounded ${activeTab === 'bab2' ? 'bg-blue-600' : ''}`}>2</button>
+                                <button onClick={() => setActiveTab('bab3')} className={`p-2 rounded ${activeTab === 'bab3' ? 'bg-blue-600' : ''}`}>3</button>
+                                <button onClick={() => setActiveTab('bab4')} className={`p-2 rounded ${activeTab === 'bab4' ? 'bg-blue-600' : ''}`}>4</button>
+                            </div>
+                        </div>
+
+                        {/* Top Navbar Desktop */}
+                        <header className="bg-white px-8 py-5 hidden md:flex items-center justify-between border-b border-gray-200 z-10">
+                            <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                                {activeTab === 'dashboard' ? 'Overview & Capaian Mata Kuliah' : 
+                                 activeTab === 'bab1' ? 'Bab 1: Refleksi & Visi Guru Profesional' : 
+                                 activeTab === 'bab2' ? 'Bab 2: Perencanaan Projek (SMART & Golden Circles)' : 
+                                 activeTab === 'bab3' ? 'Bab 3: Implementasi & Manajemen Projek' : 
+                                 'Bab 4: Monitoring, Evaluasi, Laporan Akhir & Refleksi'}
+                            </h2>
+                            <div className="bg-green-50 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center border border-green-200">
+                                <i data-lucide="check-circle" className="w-4 h-4 mr-1"></i> Data Tersimpan Otomatis
+                            </div>
+                        </header>
+
+                        {/* Scrollable Content */}
+                        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+                            <div className="max-w-5xl mx-auto pb-10">
+                                {activeTab === 'dashboard' && <Dashboard setTab={setActiveTab} data={projectData} />}
+                                {activeTab === 'bab1' && <Bab1Visi data={projectData} updateData={updateData} />}
+                                {activeTab === 'bab2' && <Bab2Perencanaan data={projectData} updateData={updateData} />}
+                                {activeTab === 'bab3' && <Bab3Implementasi data={projectData} updateData={updateData} />}
+                                {activeTab === 'bab4' && <Bab4Monev data={projectData} updateData={updateData} />}
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
